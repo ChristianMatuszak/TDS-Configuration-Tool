@@ -1,6 +1,5 @@
 from tkinter import *
 import tkinter as tk
-from PIL import Image, ImageTk
 from json import dump, dumps, load, loads
 from tkinter import ttk
 
@@ -34,4 +33,3 @@ ttk.Label(tab4, text=dumps(server_config['csv'], indent=4)).grid(column=0, row=0
 ttk.Label(tab5, text=dumps(server_config['branding'], indent=4)).grid(column=0, row=0, padx=5, pady=5)
 
 window.mainloop()
-
