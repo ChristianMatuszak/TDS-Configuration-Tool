@@ -1,0 +1,40 @@
+{
+	"db": {
+		"common-file": "C:/ProgramData/tessonics/tds2/data/database.sqlite3",
+		"revisions-dir": "C:/ProgramData/tessonics/tds2/data/revisions",
+		"measurement-storage": {
+			"db-file": "C:/ProgramData/tessonics/tds2/data/measurements.sqlite3",
+			"backup-dir": "C:/ProgramData/tessonics/tds2/data/ms-backup",
+			"keep-count": 1048576,
+			"keep-bytes": 1073741824,
+			"backup-count": 1048576,
+			"backup-bytes": 1073741824
+		}
+	},
+	"server": {
+		"name": "Tessonics Data Service",
+		"ip": "0.0.0.0",
+		"url": "https://AP03",
+		"port": 443,
+		"threads": 0,
+		"connection-threads": 4,
+		"permit-empty-logins": false,
+		"hide-operator-names": false,
+		"clamp-oversized-bond-measurements": false,
+		"max-http-request-size": 1073741824
+	},
+	"ssl": {
+		"use": true,
+		"cert-file": "C:/ProgramData/tessonics/tds2/data/certificate.pem",
+		"private-key-file": "C:/ProgramData/tessonics/tds2/data/key-file.pem",
+		"dh-param-file": "C:/ProgramData/tessonics/tds2/data/dh-params.pem"
+	},
+	"csv": {
+		"decimal-point": ",",
+		"list-separator": ";"
+	},
+	"branding": {
+		"company-name": "",
+		"logo-file": ""
+	}
+}
