@@ -10,10 +10,8 @@ with open("tds-server.json") as file:
     server_config = load(file)
 
 window = tk.Tk()
-window.title("Tab window")
+window.title("Editor")
 window.maxsize(1280, 720)
-window.config(bg="honeydew4")
-var = IntVar()
 tabControl = ttk.Notebook(window)
 
 tab1 = ttk.Frame(tabControl)
@@ -35,6 +33,5 @@ ttk.Label(tab3, text=dumps(server_config['ssl'], indent=4)).grid(column=0, row=0
 ttk.Label(tab4, text=dumps(server_config['csv'], indent=4)).grid(column=0, row=0, padx=5, pady=5)
 ttk.Label(tab5, text=dumps(server_config['branding'], indent=4)).grid(column=0, row=0, padx=5, pady=5)
 
-label = Label(window)
 window.mainloop()
 
