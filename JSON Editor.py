@@ -1,35 +1,62 @@
 from tkinter import *
 import tkinter as tk
-from json import dump, dumps, load, loads
+from json import dumps, load
 from tkinter import ttk
 
 
-with open("tds-server.json") as file:
+def dict_ent(root: dict, root_frame):
+    for index, (key, value) in enumerate(root.items()):
+        if isinstance(value, dict):
+            frm = tk.Frame(
+                root_frame,
+                padx=5,
+                pady=5,
+            )
+            frm.pack(expand=1, fill=BOTH)
+            dict_ent(value, frm)
+        else:
+            entry_frame = tk.Frame(
+                root_frame,
+                highlightbackground="Grey",
+                highlightthickness=2,
+                padx=5,
+                pady=5,
+            )
+            entry_frame.pack(expand=1, fill=BOTH)
 
+            input_var = StringVar(value=dumps(value))
+            L1 = Label(entry_frame, text=key, anchor="w").pack(
+                expand=1,
+                fill=BOTH,
+                padx=0,
+                pady=5,
+                side=LEFT,
+            )
+            E1 = Entry(
+                entry_frame,
+                textvariable=input_var,
+            ).pack(
+                expand=0,
+                fill=BOTH,
+                ipadx=110,
+                pady=2,
+                side=LEFT,
+            )
+
+
+with open("tds-server.json") as file:
     server_config = load(file)
 
 window = tk.Tk()
 window.title("Editor")
-window.maxsize(1280, 720)
-tabControl = ttk.Notebook(window)
+window.geometry("1024x800")
 
-tab1 = ttk.Frame(tabControl)
-tab2 = ttk.Frame(tabControl)
-tab3 = ttk.Frame(tabControl)
-tab4 = ttk.Frame(tabControl)
-tab5 = ttk.Frame(tabControl)
+frm = tk.Frame(
+    window,
+)
 
-tabControl.add(tab1, text="db")
-tabControl.add(tab2, text="server")
-tabControl.add(tab3, text="ssl")
-tabControl.add(tab4, text='csv')
-tabControl.add(tab5, text="branding")
-tabControl.pack(expand=1, fill="both")
+frm.pack(expand=1, fill=BOTH)
 
-ttk.Label(tab1, text=dumps(server_config['db'], indent=4)).grid(column=0, row=0, padx=5, pady=5)
-ttk.Label(tab2, text=dumps(server_config['server'], indent=4)).grid(column=0, row=0, padx=5, pady=5)
-ttk.Label(tab3, text=dumps(server_config['ssl'], indent=4)).grid(column=0, row=0, padx=5, pady=5)
-ttk.Label(tab4, text=dumps(server_config['csv'], indent=4)).grid(column=0, row=0, padx=5, pady=5)
-ttk.Label(tab5, text=dumps(server_config['branding'], indent=4)).grid(column=0, row=0, padx=5, pady=5)
+dict_ent(server_config, frm)
 
 window.mainloop()
