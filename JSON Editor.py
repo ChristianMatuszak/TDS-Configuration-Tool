@@ -72,4 +72,14 @@ canvas.create_window((0, 0), window=inner_frame, anchor="nw")
 
 dict_ent(server_config, inner_frame, canvas)
 
+bottom_restart = tk.Frame(window).pack(side="bottom", fill="both", expand=FALSE)
+bottom_save = tk.Frame(window).pack(side="bottom", fill="both", expand=FALSE)
+
+
+restart = ttk.Button(bottom_restart, text="restart").pack(
+    side=LEFT, expand=1, fill=tk.BOTH
+)
+save = ttk.Button(bottom_save, text="save").pack(side=RIGHT, expand=1, fill=BOTH)
+
+
 window.mainloop()
