@@ -1,7 +1,5 @@
-from tkinter import *
 import tkinter as tk
 from json import dumps, load
-from tkinter import ttk
 
 
 def dict_ent(root: dict, root_frame, canvas):
@@ -61,7 +59,7 @@ frm.pack(expand=True, fill=tk.BOTH)
 canvas = tk.Canvas(frm)
 canvas.pack(side="left", fill=tk.BOTH, expand=True)
 
-scrollbar = ttk.Scrollbar(frm, orient="vertical", command=canvas.yview)
+scrollbar = tk.Scrollbar(frm, orient="vertical", command=canvas.yview)
 scrollbar.pack(side="right", fill="y")
 
 canvas.configure(yscrollcommand=scrollbar.set)
@@ -72,14 +70,13 @@ canvas.create_window((0, 0), window=inner_frame, anchor="nw")
 
 dict_ent(server_config, inner_frame, canvas)
 
-bottom_restart = tk.Frame(window).pack(side="bottom", fill="both", expand=FALSE)
-bottom_save = tk.Frame(window).pack(side="bottom", fill="both", expand=FALSE)
+bottom_restart = tk.Frame(window).pack(side="bottom", fill="both", expand=tk.FALSE)
+bottom_save = tk.Frame(window).pack(side="bottom", fill="both", expand=tk.FALSE)
 
-
-restart = ttk.Button(bottom_restart, text="restart").pack(
-    side=LEFT, expand=1, fill=tk.BOTH
+restart = tk.Button(bottom_restart, text="restart").pack(
+    side=tk.LEFT, expand=1, fill=tk.BOTH
 )
-save = ttk.Button(bottom_save, text="save").pack(side=RIGHT, expand=1, fill=BOTH)
+save = tk.Button(bottom_save, text="save").pack(side=tk.RIGHT, expand=1, fill=tk.BOTH)
 
 
 window.mainloop()
