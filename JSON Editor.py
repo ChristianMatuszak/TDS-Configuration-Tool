@@ -1,6 +1,6 @@
 import tkinter as tk
 from json import dumps, load
-import os
+
 
 FRAME_PADDING = 5
 
