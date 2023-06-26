@@ -7,6 +7,14 @@ FRAME_PADDING = 5
 
 
 def dict_ent(root: dict, root_frame):
+    """creates a frame and entry for all entries in the tds-server.json file
+
+                        work in progress (name need a change)
+
+    Args:
+        root (dict): the root dict is the tds-server.json file
+        root_frame (tk.Frame): Frame to show the read data
+    """
     for key, value in root.items():
         if isinstance(value, dict):
             frm = tk.Frame(
@@ -50,8 +58,17 @@ def dict_ent(root: dict, root_frame):
 
 
 def save_button():
+    """save all changes in the tds-server.json file
+
+    work in progress
+    """
     messagebox.showinfo("saved", "changes saved")
+    save_tds()
 
 
 def restart_button():
+    """restarts the service
+
+    work in progress
+    """
     messagebox.showinfo("restart", "service restarted")

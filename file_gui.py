@@ -9,6 +9,7 @@ def main():
     window = tk.Tk()
     window.title("Editor")
     window.geometry("600x600")
+    window.resizable(width=0, height=0)
 
     # read the tds-server.json file from file-io
     tds = read_tds()
@@ -32,7 +33,7 @@ def main():
 
     config_values_label = tk.Label(
         config_path_frame,
-        text="Values:",
+        text=path_server(),
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
@@ -57,7 +58,7 @@ def main():
 
     last_modified_values_label = tk.Label(
         last_modified_frame,
-        text="Values:",
+        text=mod_server(),
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
@@ -82,7 +83,7 @@ def main():
 
     service_values_label = tk.Label(
         service_frame,
-        text="Values:",
+        text=system_running(),
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
