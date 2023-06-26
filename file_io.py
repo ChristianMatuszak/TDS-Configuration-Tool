@@ -3,22 +3,23 @@ import json
 
 
 def read_tds():
-    file1 = "tds-server.json"
+    file = "tds-server.json"
 
-    with open(file1, "r") as f1:
-        tds = json.loads(f1.read())
+    with open(file, "r") as f:
+        tds = json.loads(f.read())
 
     return tds
 
 
 def read_schema():
-    file1 = "schema.json"
+    file = "schema.json"
 
-    with open(file1, "r") as f1:
-        schema = json.loads(f1.read())
+    with open(file, "r") as f:
+        schema = json.loads(f.read())
 
     return schema
 
 
-def save_tds():
+"""def save_tds():
     file1 = "tds-server.json"
+"""
