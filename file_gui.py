@@ -23,7 +23,7 @@ def main():
     config_path_label = tk.Label(
         config_path_frame,
         text="config path:",
-        padx=FRAME_PADDING,
+        padx=9,
         pady=FRAME_PADDING,
         anchor=tk.W,
         highlightbackground="Grey",
@@ -37,8 +37,6 @@ def main():
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
-        highlightbackground="Grey",
-        highlightthickness=2,
     )
     config_values_label.pack(side=tk.LEFT)
 
@@ -62,8 +60,6 @@ def main():
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
-        highlightbackground="Grey",
-        highlightthickness=2,
     )
     last_modified_values_label.pack(side=tk.LEFT)
 
@@ -73,7 +69,7 @@ def main():
     service_label = tk.Label(
         service_frame,
         text="service:",
-        padx=FRAME_PADDING,
+        padx=21,
         pady=FRAME_PADDING,
         anchor=tk.W,
         highlightbackground="Grey",
@@ -87,8 +83,6 @@ def main():
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
-        highlightbackground="Grey",
-        highlightthickness=2,
     )
     service_values_label.pack(side=tk.LEFT)
 
