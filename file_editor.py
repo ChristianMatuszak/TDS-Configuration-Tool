@@ -1,6 +1,7 @@
 import tkinter as tk
 from file_io import *
 from tkinter import messagebox
+import os
 
 
 FRAME_PADDING = 5
@@ -24,7 +25,7 @@ def dict_ent(root: dict, root_frame):
                 highlightbackground="Grey",
                 highlightthickness=2,
             )
-            frm.pack(expand=1, fill=tk.BOTH)
+            frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
             dict_ent(value, frm)
         else:
             entry_frame = tk.Frame(

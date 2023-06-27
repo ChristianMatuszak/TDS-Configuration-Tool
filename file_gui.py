@@ -15,10 +15,15 @@ def main():
     tds = read_tds()
 
     info_frame = tk.Frame(window)
-    info_frame.pack(side=tk.TOP, anchor=tk.W)
+    info_frame.pack(
+        side=tk.TOP,
+        anchor=tk.W,
+    )
 
-    config_path_frame = tk.Frame(info_frame)
-    config_path_frame.pack(side=tk.TOP, anchor=tk.W, pady=(0, FRAME_PADDING))
+    config_path_frame = tk.Frame(
+        info_frame,
+    )
+    config_path_frame.pack(side=tk.TOP, anchor=tk.W, pady=(0, FRAME_PADDING), padx=2)
 
     config_path_label = tk.Label(
         config_path_frame,
@@ -41,7 +46,7 @@ def main():
     config_values_label.pack(side=tk.LEFT)
 
     last_modified_frame = tk.Frame(info_frame)
-    last_modified_frame.pack(side=tk.TOP, anchor=tk.W, pady=(0, FRAME_PADDING))
+    last_modified_frame.pack(side=tk.TOP, anchor=tk.W, pady=(0, FRAME_PADDING), padx=2)
 
     last_modified_label = tk.Label(
         last_modified_frame,
@@ -64,7 +69,7 @@ def main():
     last_modified_values_label.pack(side=tk.LEFT)
 
     service_frame = tk.Frame(info_frame)
-    service_frame.pack(side=tk.TOP, anchor=tk.W, pady=(0, FRAME_PADDING))
+    service_frame.pack(side=tk.TOP, anchor=tk.W, pady=(0, FRAME_PADDING), padx=2)
 
     service_label = tk.Label(
         service_frame,
