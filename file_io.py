@@ -1,8 +1,6 @@
-import tkinter as tk
 import json
 import os
-import time
-import psutil
+import datetime as dt
 from pathlib import Path
 
 
@@ -12,12 +10,10 @@ def read_tds():
     Returns:
         return: return dict for the json file
     """
-    file = "tds-server.json"
+    config_file = "tds-server.json"
 
-    with open(file, "r") as f:
-        tds = json.loads(f.read())
-
-    return tds
+    with open(config_file, "r") as f:
+        return json.loads(f.read())
 
 
 def read_schema():
@@ -26,12 +22,10 @@ def read_schema():
     Returns:
         return: return dict for the json file
     """
-    file = "schema.json"
+    schema_file = "schema.json"
 
-    with open(file, "r") as f:
-        schema = json.loads(f.read())
-
-    return schema
+    with open(schema_file, "r") as f:
+        return json.loads(f.read())
 
 
 def save_tds():
@@ -39,7 +33,7 @@ def save_tds():
 
     work in progress
     """
-    file1 = "tds-server.json"
+    tds_file = "tds-server.json"
 
 
 def path_server():
@@ -48,22 +42,18 @@ def path_server():
     Returns:
         path: location of the tds-server json file
     """
-    p = Path.cwd()
-
-    return p
+    return os.path.abspath("tds-server.json")
 
 
-def mod_server():
+def last_modified(config_path: Path):
     """get the last modified time on the tds-server file
 
     Returns:
         date: returns date and time when the file was last edited
     """
-    m1 = os.path.getmtime(path)
+    last_modified = dt.datetime.fromtimestamp(os.path.getmtime(path))
 
-    m_ti = time.ctime(m1)
-
-    return m_ti
+    return last_modified.strftime("%d %m %Y - %H:%M")
 
 
 def system_running():
@@ -75,10 +65,11 @@ def system_running():
                 work in progress(Firefox for testing purposes)
 
     """
-    for proc in psutil.process_iter():
-        if "Firefox.exe".lower() in proc.name().lower():
-            return "running"
-    return "stopped"
+    state = os.popen("sc query Tessonics-Mint-Node").read()
+    if state.find("RUNNING") != -1:
+        return "running"
+    else:
+        return "stopped"
 
 
 path = path_server()

@@ -61,7 +61,7 @@ def main():
 
     last_modified_values_label = tk.Label(
         last_modified_frame,
-        text=mod_server(),
+        text=last_modified(Path),
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
