@@ -40,7 +40,7 @@ def path_server():
     """shows the path of the tds-server file
 
     Returns:
-        path: location of the tds-server json file
+        path: returns the path aof tds-server.json file
     """
     return os.path.abspath("tds-server.json")
 
@@ -57,13 +57,10 @@ def last_modified(config_path: Path):
 
 
 def system_running():
-    """function to check if tds-server is running or not
+    """returns the state of the service Tessonics Mint Node
 
     Returns:
-        text: if it's running return:'running' if not return: 'stopped'
-
-                work in progress(Firefox for testing purposes)
-
+        text: display the state of Tessonics Mint Node service
     """
     state = os.popen("sc query Tessonics-Mint-Node").read()
     if state.find("RUNNING") != -1:
