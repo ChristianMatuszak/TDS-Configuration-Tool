@@ -53,7 +53,7 @@ def last_modified(config_path: Path):
     """
     last_modified = dt.datetime.fromtimestamp(os.path.getmtime(path))
 
-    return last_modified.strftime("%d %m %Y - %H:%M")
+    return last_modified.strftime("%d.%m.%Y  - %H:%M")
 
 
 def system_running():

@@ -43,7 +43,7 @@ def main():
         pady=FRAME_PADDING,
         anchor=tk.W,
     )
-    config_values_label.pack(side=tk.LEFT)
+    config_values_label.pack(side=tk.LEFT, expand=1, fill="both")
 
     last_modified_frame = tk.Frame(info_frame)
     last_modified_frame.pack(side=tk.TOP, anchor=tk.W, pady=(0, FRAME_PADDING), padx=2)
@@ -122,14 +122,23 @@ def main():
 
     canvas.bind("<Configure>", on_configure)
 
+    browse_button = tk.Button(config_path_frame, text="browse", command=browse)
+    browse_button.pack(side="right", anchor="e", padx=(205, 5))
+
+    start_button = tk.Button(service_frame, text="start service")
+    start_button.pack(side="left", anchor="e", padx=(280, 5))
+
+    stop_button = tk.Button(service_frame, text="stop service")
+    stop_button.pack(side="right", anchor="e")
+
     bottom_frame = tk.Frame(window)
     bottom_frame.pack(side="bottom", fill="both")
 
-    restart = tk.Button(bottom_frame, text="restart", command=restart_button)
-    restart.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
+    restart_button = tk.Button(bottom_frame, text="restart", command=restart)
+    restart_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
 
-    save = tk.Button(bottom_frame, text="save", command=save_button)
-    save.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
+    save_button = tk.Button(bottom_frame, text="save", command=save)
+    save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
 
     window.mainloop()
 
