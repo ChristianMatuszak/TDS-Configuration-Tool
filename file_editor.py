@@ -1,8 +1,6 @@
 import tkinter as tk
 from file_io import *
 from tkinter import messagebox
-import os
-
 
 FRAME_PADDING = 5
 
@@ -58,7 +56,7 @@ def dict_ent(root: dict, root_frame):
             )
 
 
-def save_button():
+def save():
     """save all changes in the tds-server.json file
 
     work in progress
@@ -67,9 +65,16 @@ def save_button():
     save_tds()
 
 
-def restart_button():
+def restart():
     """restarts the service
 
     work in progress
     """
     messagebox.showinfo("restart", "service restarted")
+
+
+def show_in_explorer():
+    path = path_server()
+
+    folder = os.path.dirname(path)
+    os.startfile(folder)

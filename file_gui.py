@@ -1,6 +1,7 @@
 import tkinter as tk
 from file_editor import *
 from file_io import *
+from win_service import *
 
 FRAME_PADDING = 5
 
@@ -43,7 +44,7 @@ def main():
         pady=FRAME_PADDING,
         anchor=tk.W,
     )
-    config_values_label.pack(side=tk.LEFT)
+    config_values_label.pack(side=tk.LEFT, expand=1, fill="both")
 
     last_modified_frame = tk.Frame(info_frame)
     last_modified_frame.pack(side=tk.TOP, anchor=tk.W, pady=(0, FRAME_PADDING), padx=2)
@@ -61,7 +62,7 @@ def main():
 
     last_modified_values_label = tk.Label(
         last_modified_frame,
-        text=mod_server(),
+        text=last_modified(),
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
@@ -84,12 +85,20 @@ def main():
 
     service_values_label = tk.Label(
         service_frame,
-        text=system_running(),
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
     )
     service_values_label.pack(side=tk.LEFT)
+
+    def poll_service(window: tk.Tk, value_label: tk.Label):
+        if service_running():
+            value_label.config(text="Running")
+        else:
+            value_label.config(text="Stopped")
+        window.after(1000, poll_service, window, value_label)
+
+    poll_service(window, service_values_label)
 
     frm = tk.Frame(window)
     frm.pack(expand=True, fill=tk.BOTH)
@@ -122,14 +131,22 @@ def main():
 
     canvas.bind("<Configure>", on_configure)
 
+    show_in_explorer_button = tk.Button(
+        config_path_frame, text="show in explorer", command=show_in_explorer
+    )
+    show_in_explorer_button.pack(side="right", anchor="e", padx=(160, 5))
+
+    start_button = tk.Button(service_frame, text="start service", command=start_service)
+    start_button.pack(side="left", anchor="e", padx=(280, 5))
+
+    stop_button = tk.Button(service_frame, text="stop service", command=stop_service)
+    stop_button.pack(side="right", anchor="e")
+
     bottom_frame = tk.Frame(window)
-    bottom_frame.pack(side="bottom", fill="both")
+    bottom_frame.pack(side="bottom", fill="both", padx=(480, 5), pady=FRAME_PADDING)
 
-    restart = tk.Button(bottom_frame, text="restart", command=restart_button)
-    restart.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
-
-    save = tk.Button(bottom_frame, text="save", command=save_button)
-    save.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
+    save_button = tk.Button(bottom_frame, text="save", command=save)
+    save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
 
     window.mainloop()
 
