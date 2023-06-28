@@ -51,22 +51,6 @@ def last_modified(config_path: Path):
     Returns:
         date: returns date and time when the file was last edited
     """
-    last_modified = dt.datetime.fromtimestamp(os.path.getmtime(path))
+    last_modified = dt.datetime.fromtimestamp(os.path.getmtime(path_server()))
 
     return last_modified.strftime("%d.%m.%Y  - %H:%M")
-
-
-def system_running():
-    """returns the state of the service Tessonics Mint Node
-
-    Returns:
-        text: display the state of Tessonics Mint Node service
-    """
-    state = os.popen("sc query Tessonics-Mint-Node").read()
-    if state.find("RUNNING") != -1:
-        return "running"
-    else:
-        return "stopped"
-
-
-path = path_server()

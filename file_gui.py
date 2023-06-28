@@ -84,12 +84,20 @@ def main():
 
     service_values_label = tk.Label(
         service_frame,
-        text=system_running(),
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
     )
     service_values_label.pack(side=tk.LEFT)
+
+    def poll_service(window: tk.Tk, value_label: tk.Label):
+        if system_running():
+            value_label.config(text="Running")
+        else:
+            value_label.config(text="Stopped")
+        window.after(1000, poll_service, window, value_label)
+
+    poll_service(window, service_values_label)
 
     frm = tk.Frame(window)
     frm.pack(expand=True, fill=tk.BOTH)
@@ -125,17 +133,14 @@ def main():
     browse_button = tk.Button(config_path_frame, text="browse", command=browse)
     browse_button.pack(side="right", anchor="e", padx=(205, 5))
 
-    start_button = tk.Button(service_frame, text="start service")
+    start_button = tk.Button(service_frame, text="start service", command=start_service)
     start_button.pack(side="left", anchor="e", padx=(280, 5))
 
-    stop_button = tk.Button(service_frame, text="stop service")
+    stop_button = tk.Button(service_frame, text="stop service", command=stop_service)
     stop_button.pack(side="right", anchor="e")
 
     bottom_frame = tk.Frame(window)
-    bottom_frame.pack(side="bottom", fill="both")
-
-    restart_button = tk.Button(bottom_frame, text="restart", command=restart)
-    restart_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
+    bottom_frame.pack(side="bottom", fill="both", padx=(480, 5), pady=FRAME_PADDING)
 
     save_button = tk.Button(bottom_frame, text="save", command=save)
     save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)

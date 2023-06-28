@@ -78,3 +78,34 @@ def browse():
 
     folder = os.path.dirname(path)
     os.startfile(folder)
+
+
+def system_running():
+    """returns the state of the service Tessonics Mint Node
+
+    Returns:
+        text: display the state of Tessonics Data Server service
+    """
+    state = os.popen("sc query Tessonics-Data-Service").read()
+    if state.find("RUNNING") != -1:
+        return True
+    else:
+        return False
+
+
+def start_service():
+    """returns the state of the service Tessonics Mint Node
+
+    Returns:
+        text: display the state of Tessonics Data Server service
+    """
+    state = os.popen("sc start Tessonics-Data-Service").read()
+
+
+def stop_service():
+    """returns the state of the service Tessonics Mint Node
+
+    Returns:
+        text: display the state of Tessonics Data Server service
+    """
+    state = os.popen("sc stop Tessonics-Data-Service").read()
