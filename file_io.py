@@ -40,12 +40,12 @@ def path_server():
     """shows the path of the tds-server file
 
     Returns:
-        path: returns the path aof tds-server.json file
+        path: returns the path of tds-server.json file
     """
     return os.path.abspath("tds-server.json")
 
 
-def last_modified(config_path: Path):
+def last_modified():
     """get the last modified time on the tds-server file
 
     Returns:
@@ -53,4 +53,4 @@ def last_modified(config_path: Path):
     """
     last_modified = dt.datetime.fromtimestamp(os.path.getmtime(path_server()))
 
-    return last_modified.strftime("%d.%m.%Y  - %H:%M")
+    return last_modified.strftime("%d.%m.%Y - %H:%M")

@@ -1,6 +1,7 @@
 import tkinter as tk
 from file_editor import *
 from file_io import *
+from win_service import *
 
 FRAME_PADDING = 5
 
@@ -61,7 +62,7 @@ def main():
 
     last_modified_values_label = tk.Label(
         last_modified_frame,
-        text=last_modified(Path),
+        text=last_modified(),
         padx=FRAME_PADDING,
         pady=FRAME_PADDING,
         anchor=tk.W,
@@ -91,7 +92,7 @@ def main():
     service_values_label.pack(side=tk.LEFT)
 
     def poll_service(window: tk.Tk, value_label: tk.Label):
-        if system_running():
+        if service_running():
             value_label.config(text="Running")
         else:
             value_label.config(text="Stopped")
@@ -130,8 +131,10 @@ def main():
 
     canvas.bind("<Configure>", on_configure)
 
-    browse_button = tk.Button(config_path_frame, text="browse", command=browse)
-    browse_button.pack(side="right", anchor="e", padx=(205, 5))
+    show_in_explorer_button = tk.Button(
+        config_path_frame, text="show in explorer", command=show_in_explorer
+    )
+    show_in_explorer_button.pack(side="right", anchor="e", padx=(160, 5))
 
     start_button = tk.Button(service_frame, text="start service", command=start_service)
     start_button.pack(side="left", anchor="e", padx=(280, 5))
