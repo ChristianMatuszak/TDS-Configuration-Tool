@@ -78,14 +78,6 @@ def save(form_state: dict):
     save_tds(result)
 
 
-def restart():
-    """restarts the service
-
-    work in progress
-    """
-    messagebox.showinfo("restart", "service restarted")
-
-
 def show_in_explorer():
     path = path_server()
 

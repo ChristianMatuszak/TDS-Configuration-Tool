@@ -13,8 +13,8 @@ class App(ttk.Frame):
         self.parent = parent
 
     def run(self):
-        # read the tds-server.json file from file-io
         tds = read_tds()
+        schema = read_schema()
 
         info_frame = ttk.LabelFrame(self, text="File Info")
         info_frame.pack(side=tk.TOP, anchor=tk.CENTER)
