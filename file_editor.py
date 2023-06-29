@@ -6,7 +6,7 @@ from tkinter import ttk
 FRAME_PADDING = 5
 
 
-def dict_ent(root: dict, root_frame, form_state: dict = {}):
+def dict_ent(root: dict, root_frame):
     """creates a frame and entry for all entries in the tds-server.json file
 
                         work in progress (name need a change)
@@ -15,6 +15,7 @@ def dict_ent(root: dict, root_frame, form_state: dict = {}):
         root (dict): the root dict is the tds-server.json file
         root_frame (tk.Frame): Frame to show the read data
     """
+    form_state = {}
     for key, value in root.items():
         if isinstance(value, dict):
             frm = ttk.LabelFrame(root_frame, text=key, width=10, height=5)
@@ -22,8 +23,7 @@ def dict_ent(root: dict, root_frame, form_state: dict = {}):
                 expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING)
             )
             frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
-            form_state[key] = {}
-            dict_ent(value, frm, form_state[key])
+            form_state[key] = dict_ent(value, frm)
         else:
             entry_frame = tk.Frame(
                 root_frame,
@@ -43,7 +43,7 @@ def dict_ent(root: dict, root_frame, form_state: dict = {}):
                 pady=5,
                 side=tk.LEFT,
             )
-            entry = ttk.Entry(
+            ttk.Entry(
                 entry_frame,
                 textvariable=form_state[key],
             ).pack(
@@ -63,16 +63,14 @@ def save(form_state: dict):
     work in progress
     """
 
-    def iter_form(parent: dict, result: dict = {}):
+    def iter_form(parent: dict):
+        state = {}
         for key, value in parent.items():
             if isinstance(value, dict):
-                result[key] = {}
-                iter_form(parent[key], result[key])
-
+                state[key] = iter_form(parent[key])
             else:
-                result[key] = value.get()
-
-        return result
+                state[key] = value.get()
+        return state
 
     result = iter_form(form_state)
 
