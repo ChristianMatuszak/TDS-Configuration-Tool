@@ -12,7 +12,7 @@ def read_tds():
     config_file = "tds-server.json"
 
     with open(config_file, "r") as f:
-        return json.loads(f.read())
+        return json.load(f)
 
 
 def read_schema():
@@ -24,15 +24,17 @@ def read_schema():
     schema_file = "schema.json"
 
     with open(schema_file, "r") as f:
-        return json.loads(f.read())
+        return json.load(f)
 
 
-def save_tds():
+def save_tds(config):
     """function to save chaged values in the tds-server file
 
     work in progress
     """
     tds_file = "tds-server.json"
+    with open(tds_file, "w") as f:
+        json.dump(config, f, indent=4)
 
 
 def path_server():
