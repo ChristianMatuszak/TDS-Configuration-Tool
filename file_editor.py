@@ -34,7 +34,7 @@ def dict_ent(root: dict, root_frame):
             )
 
             input_var = tk.StringVar(value=value)
-            tk.Label(entry_frame, text=key + " :", anchor="w").pack(
+            tk.Label(entry_frame, text=f"{key} :", anchor="w").pack(
                 expand=1,
                 fill=tk.BOTH,
                 padx=0,
