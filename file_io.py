@@ -1,7 +1,6 @@
 import json
 import os
 import datetime as dt
-from pathlib import Path
 
 
 def read_tds():
