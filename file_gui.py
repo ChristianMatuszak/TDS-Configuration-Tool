@@ -125,7 +125,7 @@ class App(ttk.Frame):
 
         # function to go through the tds-server.json file
         # and create frames and labels per entry
-        dict_ent(tds, root_frame)
+        self.form_state = dict_ent(tds, root_frame)
 
         # config to use the mousewheel for scrolling
         canvas.configure(yscrollcommand=scrollbar.set)
@@ -168,7 +168,9 @@ class App(ttk.Frame):
             pady=FRAME_PADDING,
         )
 
-        save_button = ttk.Button(bottom_frame, text="save", command=save)
+        save_button = ttk.Button(
+            bottom_frame, text="save", command=lambda: save(self.form_state)
+        )
         save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
 
         self.parent.mainloop()

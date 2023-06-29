@@ -6,7 +6,7 @@ from tkinter import ttk
 FRAME_PADDING = 5
 
 
-def dict_ent(root: dict, root_frame):
+def dict_ent(root: dict, root_frame, form_state: dict = {}):
     """creates a frame and entry for all entries in the tds-server.json file
 
                         work in progress (name need a change)
@@ -21,7 +21,9 @@ def dict_ent(root: dict, root_frame):
             frm.pack(
                 expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING)
             )
-            dict_ent(value, frm)
+            frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
+            form_state[key] = {}
+            dict_ent(value, frm, form_state[key])
         else:
             entry_frame = tk.Frame(
                 root_frame,
@@ -33,8 +35,8 @@ def dict_ent(root: dict, root_frame):
                 fill=tk.BOTH,
             )
 
-            input_var = tk.StringVar(value=value)
-            tk.Label(entry_frame, text=f"{key} :", anchor="w").pack(
+            form_state[key] = tk.StringVar(value=(value))
+            tk.Label(entry_frame, text=key, anchor="w").pack(
                 expand=1,
                 fill=tk.BOTH,
                 padx=0,
@@ -43,9 +45,8 @@ def dict_ent(root: dict, root_frame):
             )
             entry = ttk.Entry(
                 entry_frame,
-            )
-            entry.insert(0, value)
-            entry.pack(
+                textvariable=form_state[key],
+            ).pack(
                 expand=0,
                 fill=tk.BOTH,
                 ipadx=110,
@@ -53,14 +54,30 @@ def dict_ent(root: dict, root_frame):
                 side=tk.LEFT,
             )
 
+    return form_state
 
-def save():
+
+def save(form_state: dict):
     """save all changes in the tds-server.json file
 
     work in progress
     """
+
+    def iter_form(parent: dict, result: dict = {}):
+        for key, value in parent.items():
+            if isinstance(value, dict):
+                result[key] = {}
+                iter_form(parent[key], result[key])
+
+            else:
+                result[key] = value.get()
+
+        return result
+
+    result = iter_form(form_state)
+
     messagebox.showinfo("saved", "changes saved")
-    save_tds()
+    save_tds(result)
 
 
 def restart():
