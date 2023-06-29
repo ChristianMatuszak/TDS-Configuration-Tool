@@ -18,7 +18,9 @@ def dict_ent(root: dict, root_frame):
     for key, value in root.items():
         if isinstance(value, dict):
             frm = ttk.LabelFrame(root_frame, text=key, width=10, height=5)
-            frm.pack(expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING))
+            frm.pack(
+                expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING)
+            )
             dict_ent(value, frm)
         else:
             entry_frame = tk.Frame(
