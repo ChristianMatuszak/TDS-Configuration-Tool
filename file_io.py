@@ -24,7 +24,8 @@ def read_schema():
     schema_file = "schema.json"
 
     with open(schema_file, "r") as f:
-        return json.load(f)
+        content = f.read()
+        return json.loads(content)
 
 
 def save_tds(config):
