@@ -6,7 +6,7 @@ from tkinter import ttk
 FRAME_PADDING = 5
 
 
-def dict_ent(root: dict, root_frame):
+def dict_ent(schema: dict, root_frame, root):
     """creates a frame and entry for all entries in the tds-server.json file
 
                         work in progress (name need a change)
@@ -16,14 +16,16 @@ def dict_ent(root: dict, root_frame):
         root_frame (tk.Frame): Frame to show the read data
     """
     form_state = {}
-    for key, value in root.items():
-        if isinstance(value, dict):
-            frm = ttk.LabelFrame(root_frame, text=key, width=10, height=5)
+    for property_key, property_schema in schema["properties"].items():
+        if property_schema["type"] == "object":
+            frm = ttk.LabelFrame(root_frame, text=schema["title"], width=10, height=5)
             frm.pack(
                 expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING)
             )
             frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
-            form_state[key] = dict_ent(value, frm)
+            form_state[property_key] = dict_ent(
+                property_schema, frm, root[property_key]
+            )
         else:
             entry_frame = tk.Frame(
                 root_frame,
@@ -35,18 +37,30 @@ def dict_ent(root: dict, root_frame):
                 fill=tk.BOTH,
             )
 
-            form_state[key] = tk.StringVar(value=(value))
-            tk.Label(entry_frame, text=key, anchor="w").pack(
+            if property_schema["type"] == "string":
+                if property_key in root:
+                    form_state[property_key] = tk.StringVar(value=root[property_key])
+                else:
+                    form_state[property_key] = tk.StringVar()
+            elif property_schema["type"] == "integer":
+                if property_key in root:
+                    form_state[property_key] = tk.IntVar(value=root[property_key])
+                else:
+                    form_state[property_key] = tk.IntVar()
+            elif property_schema["type"] == "boolean":
+                if property_key in root:
+                    form_state[property_key] = tk.BooleanVar(value=root[property_key])
+                else:
+                    form_state[property_key] = tk.BooleanVar()
+
+            tk.Label(entry_frame, text=property_schema["title"], anchor="w").pack(
                 expand=1,
                 fill=tk.BOTH,
                 padx=0,
                 pady=5,
                 side=tk.LEFT,
             )
-            ttk.Entry(
-                entry_frame,
-                textvariable=form_state[key],
-            ).pack(
+            ttk.Entry(entry_frame, textvariable=form_state[property_key]).pack(
                 expand=0,
                 fill=tk.BOTH,
                 ipadx=110,
@@ -76,14 +90,6 @@ def save(form_state: dict):
 
     messagebox.showinfo("saved", "changes saved")
     save_tds(result)
-
-
-def restart():
-    """restarts the service
-
-    work in progress
-    """
-    messagebox.showinfo("restart", "service restarted")
 
 
 def show_in_explorer():

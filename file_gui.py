@@ -13,7 +13,6 @@ class App(ttk.Frame):
         self.parent = parent
 
     def run(self):
-        # read the tds-server.json file from file-io
         tds = read_tds()
 
         info_frame = ttk.LabelFrame(self, text="File Info")
@@ -125,7 +124,7 @@ class App(ttk.Frame):
 
         # function to go through the tds-server.json file
         # and create frames and labels per entry
-        self.form_state = dict_ent(tds, root_frame)
+        self.form_state = dict_ent(read_schema(), root_frame, tds)
 
         # config to use the mousewheel for scrolling
         canvas.configure(yscrollcommand=scrollbar.set)
@@ -183,7 +182,7 @@ if __name__ == "__main__":
     window.resizable(width=0, height=0)
 
     window.tk.call("source", "azure.tcl")
-    window.tk.call("set_theme", "dark")
+    window.tk.call("set_theme", "light")
 
     style = ttk.Style()
     style.configure("TLabel", backgounrd="Grey")
