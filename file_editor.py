@@ -15,7 +15,7 @@ def populate_tabs(schema: dict, root, tds):
         tds (dict): Information from the tds-server.json file
 
     Returns:
-        string: return of the vales for the dict_ent function
+        string: returns a dict of all state variables of the tabs form
     """
     form_tab = {}
     notebook = ttk.Notebook(root)
@@ -111,10 +111,10 @@ def validate_int(new_text):
         it will block any non int type input in the integer entries
 
     Args:
-        new_text (int): checks if the new_text variable is int or not
+        new_text (str): It contains the most rescent added text
 
     Returns:
-        _type_: if it is int return True if not retunr False
+        boolean: if it is int return True if not return False
     """
     if new_text.isnumeric():
         return True
@@ -132,7 +132,7 @@ def save(form_state: dict):
             parent (dict): dict where to save the user input (tds-server.json)
 
         Returns:
-            _type_: depends on the data type. These types are: int, str and boolean
+            dict: returns the current data contents of all forms
         """
         state = {}
         for key, value in parent.items():
