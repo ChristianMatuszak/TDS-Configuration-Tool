@@ -110,34 +110,6 @@ class App(ttk.Frame):
         frm = tk.Frame(self)
         frm.pack(expand=True, fill=tk.BOTH)
 
-        canvas = tk.Canvas(frm)
-        canvas.pack(side="left", fill=tk.BOTH, expand=True)
-
-        scrollbar = ttk.Scrollbar(frm, orient="vertical", command=canvas.yview)
-        scrollbar.pack(side="right", fill="y")
-
-        inner_frame = tk.Frame(canvas)
-        canvas.create_window((0, 0), window=inner_frame, anchor="nw")
-
-        root_frame = tk.Frame(inner_frame)
-        root_frame.pack(expand=1, fill=tk.BOTH)
-
-        # function to go through the tds-server.json file
-        # and create frames and labels per entry
-        self.form_state = dict_ent(read_schema(), root_frame, tds)
-
-        # config to use the mousewheel for scrolling
-        canvas.configure(yscrollcommand=scrollbar.set)
-        canvas.bind_all(
-            "<MouseWheel>",
-            lambda event: canvas.yview_scroll(int(-1 * (event.delta / 120)), "units"),
-        )
-
-        def on_configure(event):
-            canvas.configure(scrollregion=canvas.bbox("all"))
-
-        canvas.bind("<Configure>", on_configure)
-
         show_in_explorer_button = ttk.Button(
             config_path_frame,
             text="show in explorer",
@@ -168,9 +140,13 @@ class App(ttk.Frame):
         )
 
         save_button = ttk.Button(
-            bottom_frame, text="save", command=lambda: save(self.form_state)
+            bottom_frame, text="save", command=lambda: save(self.tab_state)
         )
         save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
+
+        # function to go through the schema.json file
+        # and create Tabs for every key
+        self.tab_state = populate_tabs(read_schema(), frm, tds)
 
         self.parent.mainloop()
 
@@ -178,7 +154,7 @@ class App(ttk.Frame):
 if __name__ == "__main__":
     window = tk.Tk()
     window.title("Editor")
-    window.geometry("650x650")
+    window.geometry("700x700")
     window.resizable(width=0, height=0)
 
     window.tk.call("source", "azure.tcl")
