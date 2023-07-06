@@ -10,11 +10,10 @@ FRAME_PADDING = 5
 
 
 class App(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, configuration_path, schema):
         ttk.Frame.__init__(self)
         self.parent = parent
 
-    def run(self, configuration_path, schema):
         configuration_path, tds = read_tds(configuration_path)
 
         info_frame = ttk.LabelFrame(self, text="File Info")
@@ -152,7 +151,11 @@ class App(ttk.Frame):
         # and create Tabs for every key
         self.tab_state = populate_tabs(read_schema(schema), frm, tds)
 
-        self.parent.mainloop()
+    def run(self):
+        try:
+            self.parent.mainloop()
+        except Exception as e:
+            messagebox.showerror("Exception", f"{e}")
 
 
 @click.command()
@@ -177,9 +180,9 @@ def main(configuration, schema):
     style.configure("TLabel", backgounrd="Grey")
     style.configure("TLabelframe", background="dodgerblue")
 
-    app = App(window)
+    app = App(window, configuration, schema)
     app.pack(fill="both", expand=True)
-    app.run(configuration, schema)
+    app.run()
 
 
 if __name__ == "__main__":
