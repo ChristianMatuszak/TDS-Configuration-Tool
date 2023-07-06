@@ -3,6 +3,8 @@ from tkinter import ttk
 from file_editor import *
 from file_io import *
 from win_service import *
+import click
+
 
 FRAME_PADDING = 5
 
@@ -12,8 +14,8 @@ class App(ttk.Frame):
         ttk.Frame.__init__(self)
         self.parent = parent
 
-    def run(self):
-        tds = read_tds()
+    def run(self, configuration_path, schema):
+        configuration_path, tds = read_tds(configuration_path)
 
         info_frame = ttk.LabelFrame(self, text="File Info")
         info_frame.pack(side=tk.TOP, anchor=tk.CENTER)
@@ -39,7 +41,7 @@ class App(ttk.Frame):
 
         config_values_label = tk.Label(
             config_path_frame,
-            text=path_server(),
+            text=configuration_path,
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.W,
@@ -63,7 +65,7 @@ class App(ttk.Frame):
 
         last_modified_values_label = tk.Label(
             last_modified_frame,
-            text=last_modified(),
+            text=last_modified(configuration_path),
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.W,
@@ -113,7 +115,7 @@ class App(ttk.Frame):
         show_in_explorer_button = ttk.Button(
             config_path_frame,
             text="show in explorer",
-            command=show_in_explorer,
+            command=lambda: show_in_explorer(configuration_path),
         )
         show_in_explorer_button.pack(
             side="right", anchor="e", padx=(FRAME_PADDING, FRAME_PADDING)
@@ -140,18 +142,29 @@ class App(ttk.Frame):
         )
 
         save_button = ttk.Button(
-            bottom_frame, text="save", command=lambda: save(self.tab_state)
+            bottom_frame,
+            text="save",
+            command=lambda: save(self.tab_state, configuration_path),
         )
         save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
 
         # function to go through the schema.json file
         # and create Tabs for every key
-        self.tab_state = populate_tabs(read_schema(), frm, tds)
+        self.tab_state = populate_tabs(read_schema(schema), frm, tds)
 
         self.parent.mainloop()
 
 
-if __name__ == "__main__":
+@click.command()
+@click.option(
+    "--configuration",
+    help="Path to the tds-server location.",
+)
+@click.option(
+    "--schema",
+    help="create the schem.json file if the created file was not found.",
+)
+def main(configuration, schema):
     window = tk.Tk()
     window.title("Editor")
     window.geometry("700x700")
@@ -166,5 +179,8 @@ if __name__ == "__main__":
 
     app = App(window)
     app.pack(fill="both", expand=True)
+    app.run(configuration, schema)
 
-    app.run()
+
+if __name__ == "__main__":
+    main()

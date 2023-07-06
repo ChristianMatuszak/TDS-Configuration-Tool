@@ -3,55 +3,52 @@ import os
 import datetime as dt
 
 
-def read_tds():
+def read_tds(configuration_path):
     """read the tds-server.json file
 
     Returns:
         return: return dict for the json file
     """
-    config_file = "tds-server.json"
+    if configuration_path is None:
+        configuration_path = "tds-server.json"
 
-    with open(config_file, "r") as f:
-        return json.load(f)
+    with open(configuration_path, "r") as f:
+        return (configuration_path, json.load(f))
 
 
-def read_schema():
+def read_schema(default_schema):
     """read the schema.json file
 
     Returns:
         return: return dict for the json file
     """
-    schema_file = "schema.json"
+    if default_schema is None:
+        return json.loads(default_schema)
 
-    with open(schema_file, "r") as f:
+    with open("schema.json", "r") as f:
         return json.load(f)
 
 
-def save_tds(config):
-    """function to save chaged values in the tds-server file
+def save_tds(config, configuration_path):
+    """function to save chaged values in the tds-server file"""
 
-    work in progress
-    """
-    tds_file = "tds-server.json"
-    with open(tds_file, "w") as f:
+    with open(configuration_path, "w") as f:
         json.dump(config, f, indent=4)
 
 
-def path_server():
-    """shows the path of the tds-server file
-
-    Returns:
-        path: returns the path of tds-server.json file
-    """
-    return os.path.abspath("tds-server.json")
-
-
-def last_modified():
+def last_modified(configuration_path):
     """get the last modified time on the tds-server file
 
     Returns:
         date: returns date and time when the file was last edited
     """
-    last_modified = dt.datetime.fromtimestamp(os.path.getmtime(path_server()))
+    last_modified = dt.datetime.fromtimestamp(os.path.getmtime(configuration_path))
 
     return last_modified.strftime("%d.%m.%Y - %H:%M")
+
+
+def show_in_explorer(configuration_path):
+    """funtion to show the tds-server.json file in the explorer"""
+
+    folder = os.path.dirname(configuration_path)
+    os.startfile(folder)

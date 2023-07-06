@@ -122,7 +122,7 @@ def validate_int(new_text):
         return False
 
 
-def save(form_state: dict):
+def save(form_state: dict, configuration_file):
     """save all changes in the tds-server.json file"""
 
     def iter_form(parent: dict):
@@ -145,12 +145,4 @@ def save(form_state: dict):
     result = iter_form(form_state)
 
     messagebox.showinfo("saved", "changes saved")
-    save_tds(result)
-
-
-def show_in_explorer():
-    """funtion to show the tds-server.json file in the explorer"""
-    path = path_server()
-
-    folder = os.path.dirname(path)
-    os.startfile(folder)
+    save_tds(result, configuration_file)
