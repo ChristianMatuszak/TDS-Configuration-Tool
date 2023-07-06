@@ -162,7 +162,7 @@ class App(ttk.Frame):
 )
 @click.option(
     "--schema",
-    help="create the schem.json file if the created file was not found.",
+    help="create the schema.json file if the created file was not found.",
 )
 def main(configuration, schema):
     window = tk.Tk()

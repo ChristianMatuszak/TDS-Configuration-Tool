@@ -144,5 +144,5 @@ def save(form_state: dict, configuration_file):
 
     result = iter_form(form_state)
 
-    messagebox.showinfo("saved", "changes saved")
     save_tds(result, configuration_file)
+    messagebox.showinfo("saved", "changes saved")

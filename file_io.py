@@ -22,7 +22,7 @@ def read_schema(default_schema):
     Returns:
         return: return dict for the json file
     """
-    if default_schema is None:
+    if default_schema is not None:
         return json.loads(default_schema)
 
     with open("schema.json", "r") as f:
