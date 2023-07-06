@@ -39,7 +39,7 @@ jobs:
         pytest
         
   deploy:
-
+    needs: build
     runs-on: windows-latest
     
     steps:
@@ -52,7 +52,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install -r requirements.txt
         
     - name: deploy with pyinstaller
       run: pyinstaller -F .\file_gui.py
