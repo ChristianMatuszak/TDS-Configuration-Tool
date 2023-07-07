@@ -24,8 +24,9 @@ def populate_tabs(schema: dict, root, tds):
     for property_key, property_schema in schema["properties"].items():
         body_frame = ttk.Frame()
         body_frame.pack(fill="both", expand=True)
+
         form_tab[property_key] = dict_ent(
-            property_schema, body_frame, tds[property_key]
+            property_schema, body_frame, tds[property_key] if tds is not None else None
         )
         notebook.add(body_frame, text=property_schema["title"])
 
@@ -50,7 +51,7 @@ def dict_ent(schema: dict, root_frame, root):
             )
             frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
             form_state[property_key] = dict_ent(
-                property_schema, frm, root[property_key]
+                property_schema, frm, root[property_key] if root is not None else None
             )
         else:
             entry_frame = tk.Frame(
@@ -71,38 +72,38 @@ def dict_ent(schema: dict, root_frame, root):
             )
 
             if property_schema["type"] == "string":
-                if property_key in root:
+                if root is not None and property_key in root:
                     form_state[property_key] = tk.StringVar(value=root[property_key])
-                    ttk.Entry(
-                        entry_frame,
-                        textvariable=form_state[property_key],
-                    ).pack(
-                        fill=tk.X,
-                        ipadx=110,
-                        pady=2,
-                        side=tk.LEFT,
-                    )
                 else:
                     form_state[property_key] = tk.StringVar()
+                ttk.Entry(
+                    entry_frame,
+                    textvariable=form_state[property_key],
+                ).pack(
+                    fill=tk.X,
+                    ipadx=110,
+                    pady=2,
+                    side=tk.LEFT,
+                )
             elif property_schema["type"] == "integer":
-                if property_key in root:
+                if root is not None and property_key in root:
                     form_state[property_key] = tk.IntVar(value=root[property_key])
-                    ttk.Entry(
-                        entry_frame,
-                        textvariable=form_state[property_key],
-                        validate="key",
-                        validatecommand=(root_frame.register(validate_int), "%S"),
-                    ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
                 else:
-                    form_state[property_key] = tk.IntVar(0)
+                    form_state[property_key] = tk.IntVar(value=0)
+                ttk.Entry(
+                    entry_frame,
+                    textvariable=form_state[property_key],
+                    validate="key",
+                    validatecommand=(root_frame.register(validate_int), "%S"),
+                ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
             elif property_schema["type"] == "boolean":
-                if property_key in root:
+                if root is not None and property_key in root:
                     form_state[property_key] = tk.BooleanVar(value=root[property_key])
-                    ttk.Checkbutton(
-                        entry_frame, variable=form_state[property_key]
-                    ).pack(fill=tk.X, ipadx=172, pady=2, side=tk.LEFT, anchor="w")
                 else:
                     form_state[property_key] = tk.BooleanVar()
+                ttk.Checkbutton(entry_frame, variable=form_state[property_key]).pack(
+                    fill=tk.X, ipadx=172, pady=2, side=tk.LEFT, anchor="w"
+                )
     return form_state
 
 
@@ -122,8 +123,11 @@ def validate_int(new_text):
         return False
 
 
-def save(form_state: dict, configuration_file):
+def save(form_state: dict, configuration_file, parent):
     """save all changes in the tds-server.json file"""
+
+    if configuration_file is None:
+        configuration_file = "C:\\ProgramData\\tessonics\\tds2\\tds-server.json"
 
     def iter_form(parent: dict):
         """function to save changes done by the user
@@ -146,3 +150,13 @@ def save(form_state: dict, configuration_file):
 
     save_tds(result, configuration_file)
     messagebox.showinfo("saved", "changes saved")
+    parent.quit()
+
+
+def confirm_no(confirm_window):
+    confirm_window.destroy()
+
+
+def confirm_yes(confirm_window, window):
+    confirm_window.destroy()
+    window.destroy()

@@ -12,6 +12,9 @@ def read_tds(configuration_path):
     if configuration_path is None:
         configuration_path = "tds-server.json"
 
+    if not os.path.isfile(configuration_path):
+        return None, None
+
     with open(configuration_path, "r") as f:
         return (configuration_path, json.load(f))
 

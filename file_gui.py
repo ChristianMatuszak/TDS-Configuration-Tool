@@ -64,7 +64,9 @@ class App(ttk.Frame):
 
         last_modified_values_label = tk.Label(
             last_modified_frame,
-            text=last_modified(configuration_path),
+            text=last_modified(configuration_path)
+            if configuration_path is not None
+            else "not loaded",
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.W,
@@ -143,13 +145,40 @@ class App(ttk.Frame):
         save_button = ttk.Button(
             bottom_frame,
             text="save",
-            command=lambda: save(self.tab_state, configuration_path),
+            command=lambda: save(self.tab_state, configuration_path, parent),
         )
         save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
+
+        def close_app():
+            """Function to prevent accidental closure and query whether you are sure with yes, no and save and exit buttons"""
+            confirm_window = tk.Toplevel(parent)
+            confirm_window.title("Close application without saving?")
+            confirm_window.geometry("318x150")
+            confirm_window.resizable(False, False)
+
+            yes_button = ttk.Button(
+                confirm_window,
+                text="yes",
+                command=lambda: confirm_yes(confirm_window, parent),
+            )
+            yes_button.pack(side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING)
+            no_button = ttk.Button(
+                confirm_window, text="no", command=lambda: confirm_no(confirm_window)
+            )
+            no_button.pack(side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING)
+            save_and_exit_button = ttk.Button(
+                confirm_window,
+                text="save and exit",
+                command=lambda: save(self.tab_state, configuration_path, parent),
+            )
+            save_and_exit_button.pack(
+                side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING
+            )
 
         # function to go through the schema.json file
         # and create Tabs for every key
         self.tab_state = populate_tabs(read_schema(schema), frm, tds)
+        parent.protocol("WM_DELETE_WINDOW", close_app)
 
     def run(self):
         try:
