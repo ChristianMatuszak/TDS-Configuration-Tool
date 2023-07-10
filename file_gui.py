@@ -10,7 +10,7 @@ FRAME_PADDING = 5
 
 
 class App(ttk.Frame):
-    def __init__(self, parent, configuration_path, schema):
+    def __init__(self, parent, configuration_path, schema, window):
         ttk.Frame.__init__(self)
         self.parent = parent
 
@@ -151,10 +151,25 @@ class App(ttk.Frame):
 
         def close_app():
             """Function to prevent accidental closure and query whether you are sure with yes, no and save and exit buttons"""
+            window.attributes("-disabled", True)
+
             confirm_window = tk.Toplevel(parent)
             confirm_window.title("Exit")
-            confirm_window.geometry("318x150")
+            confirm_window.geometry("320x150")
             confirm_window.resizable(False, False)
+            confirm_window.configure(
+                highlightbackground="dodgerblue", highlightthickness=1
+            )
+
+            confirm_window.update_idletasks()
+            width = confirm_window.winfo_width()
+            height = confirm_window.winfo_height()
+            x = (window.winfo_width() // 2) - (width // 2) + window.winfo_x()
+            y = (window.winfo_height() // 2) - (height // 2) + window.winfo_y()
+            confirm_window.geometry(f"+{x}+{y}")
+            confirm_window.resizable(False, False)
+
+            confirm_window.overrideredirect(True)
 
             closing_frame = ttk.Frame(confirm_window)
             closing_frame.pack(side="top", expand=True, fill="both")
@@ -171,7 +186,9 @@ class App(ttk.Frame):
             )
             yes_button.pack(side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING)
             no_button = ttk.Button(
-                confirm_window, text="no", command=lambda: confirm_no(confirm_window)
+                confirm_window,
+                text="no",
+                command=lambda: confirm_no(confirm_window, window),
             )
             no_button.pack(side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING)
             save_and_exit_button = ttk.Button(
@@ -222,7 +239,7 @@ def main(configuration, schema):
     style.configure("TLabel", backgounrd="Grey")
     style.configure("TLabelframe", background="dodgerblue")
 
-    app = App(window, configuration, schema)
+    app = App(window, configuration, schema, window)
     app.pack(fill="both", expand=True)
     app.run()
 

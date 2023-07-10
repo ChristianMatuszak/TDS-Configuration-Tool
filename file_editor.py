@@ -178,13 +178,14 @@ def save_and_exit_handler(tab_state, configuration_path, window):
     save(tab_state, configuration_path, exit_program=True)
 
 
-def confirm_no(confirm_window):
+def confirm_no(confirm_window, window):
     """function not to close the confirm_window after pressing the no button
 
     Args:
         confirm_window (ttk.Frame): frame with the 3 buttons if you want to close the application
     """
     confirm_window.destroy()
+    window.attributes("-disabled", False)
 
 
 def confirm_yes(confirm_window, window):
