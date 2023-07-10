@@ -16,7 +16,7 @@ def service_running():
 
 
 def start_service():
-    """returns the state of the service Tessonics Mint Node
+    """returns the state of the service Tessonics Data Server
 
     Returns:
         text: display the state of Tessonics Data Server service
@@ -29,7 +29,7 @@ def start_service():
 
 
 def stop_service():
-    """returns the state of the service Tessonics Mint Node
+    """returns the state of the service Tessonics Data Server
 
     Returns:
         text: display the state of Tessonics Data Server service

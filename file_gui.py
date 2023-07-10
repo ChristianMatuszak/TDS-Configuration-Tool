@@ -145,16 +145,24 @@ class App(ttk.Frame):
         save_button = ttk.Button(
             bottom_frame,
             text="save",
-            command=lambda: save(self.tab_state, configuration_path, parent),
+            command=lambda: save_button_handler(self.tab_state, configuration_path),
         )
         save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
 
         def close_app():
             """Function to prevent accidental closure and query whether you are sure with yes, no and save and exit buttons"""
             confirm_window = tk.Toplevel(parent)
-            confirm_window.title("Close application without saving?")
+            confirm_window.title("Exit")
             confirm_window.geometry("318x150")
             confirm_window.resizable(False, False)
+
+            closing_frame = ttk.Frame(confirm_window)
+            closing_frame.pack(side="top", expand=True, fill="both")
+
+            closing_label = ttk.Label(
+                closing_frame, text="close application without saving"
+            )
+            closing_label.pack()
 
             yes_button = ttk.Button(
                 confirm_window,
@@ -169,7 +177,9 @@ class App(ttk.Frame):
             save_and_exit_button = ttk.Button(
                 confirm_window,
                 text="save and exit",
-                command=lambda: save(self.tab_state, configuration_path, parent),
+                command=lambda: save_and_exit_handler(
+                    self.tab_state, configuration_path, parent
+                ),
             )
             save_and_exit_button.pack(
                 side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING
@@ -179,6 +189,9 @@ class App(ttk.Frame):
         # and create Tabs for every key
         self.tab_state = populate_tabs(read_schema(schema), frm, tds)
         parent.protocol("WM_DELETE_WINDOW", close_app)
+
+    def quit_application(self):
+        self.window.destroy()
 
     def run(self):
         try:

@@ -2,6 +2,7 @@ import tkinter as tk
 from file_io import *
 from tkinter import messagebox
 from tkinter import ttk
+import sys
 
 FRAME_PADDING = 5
 
@@ -123,7 +124,7 @@ def validate_int(new_text):
         return False
 
 
-def save(form_state: dict, configuration_file, parent):
+def save(form_state: dict, configuration_file, exit_program=False):
     """save all changes in the tds-server.json file"""
 
     if configuration_file is None:
@@ -150,13 +151,48 @@ def save(form_state: dict, configuration_file, parent):
 
     save_tds(result, configuration_file)
     messagebox.showinfo("saved", "changes saved")
-    parent.quit()
+    if exit_program:
+        sys.exit()
+
+
+def save_button_handler(tab_state, configuration_path):
+    """function to give the save function the exit_program = False argmunet
+    after pressing the save button
+
+    Args:
+        tab_state (dict): the dict with all changes from the entries
+        configuration_path (str): The path of the tds-server .json file to save the changes
+    """
+    save(tab_state, configuration_path, exit_program=False)
+
+
+def save_and_exit_handler(tab_state, configuration_path, window):
+    """function to give the save function the exit_program = True argument
+    after pressing the save_and_exit button
+
+    Args:
+        tab_state (dict): the dict with all changes from the entries
+        configuration_path (str): The path of the tds-server .json file to save the changes
+        window (ttk.Frame): Frame that will be closed after pressing the button
+    """
+    save(tab_state, configuration_path, exit_program=True)
 
 
 def confirm_no(confirm_window):
+    """function not to close the confirm_window after pressing the no button
+
+    Args:
+        confirm_window (ttk.Frame): frame with the 3 buttons if you want to close the application
+    """
     confirm_window.destroy()
 
 
 def confirm_yes(confirm_window, window):
+    """function to close the confirm_window after pressing the yes button
+
+    Args:
+        confirm_window (ttk.Frame): frame with the 3 buttons if you want to close the application_
+        window (ttk.Frame): Frame of the main application
+    """
     confirm_window.destroy()
     window.destroy()
