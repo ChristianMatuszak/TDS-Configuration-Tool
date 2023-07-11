@@ -78,15 +78,16 @@ def dict_ent(schema: dict, root_frame, root):
                     form_state[property_key] = tk.StringVar(value=root[property_key])
                 else:
                     form_state[property_key] = tk.StringVar()
-                ttk.Entry(
-                    entry_frame,
-                    textvariable=form_state[property_key],
-                ).pack(
-                    fill=tk.X,
-                    ipadx=110,
-                    pady=2,
-                    side=tk.LEFT,
-                )
+                if is_file_path(value=root[property_key]):
+                    ttk.Entry(
+                        entry_frame,
+                        textvariable=form_state[property_key],
+                        state="readonly",
+                    ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+                else:
+                    ttk.Entry(entry_frame, textvariable=form_state[property_key]).pack(
+                        fill=tk.X, ipadx=110, pady=2, side=tk.LEFT
+                    )
             elif property_schema["type"] == "integer":
                 if root is not None and property_key in root:
                     form_state[property_key] = tk.IntVar(value=root[property_key])
@@ -107,6 +108,20 @@ def dict_ent(schema: dict, root_frame, root):
                     fill=tk.X, ipadx=172, pady=2, side=tk.LEFT, anchor="w"
                 )
     return form_state
+
+
+def is_file_path(value):
+    """function to test string if they are file path or not
+
+    Args:
+        value (str): string that needs to be testet
+
+    Returns:
+        boolean: return true if it is a pth and False if it's not or an url
+    """
+    if value.startswith(("http://", "https://")):
+        return False
+    return os.path.isfile(value) or os.path.dirname(value)
 
 
 def validate_int(new_text):
@@ -201,5 +216,6 @@ def confirm_yes(confirm_window, window):
 
 
 def open_help():
+    """funktion that opens the installation guide in the webbrowser"""
     url = "https://tessonics.github.io/user-docs/v4/installation-guide/fulltext.html"
     webbrowser.open(url, new=0, autoraise=True)
