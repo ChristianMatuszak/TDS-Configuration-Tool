@@ -3,6 +3,7 @@ from file_io import *
 from tkinter import messagebox
 from tkinter import ttk
 import sys
+import webbrowser
 
 FRAME_PADDING = 5
 
@@ -197,3 +198,8 @@ def confirm_yes(confirm_window, window):
     """
     confirm_window.destroy()
     window.destroy()
+
+
+def open_help():
+    url = "https://tessonics.github.io/user-docs/v4/installation-guide/fulltext.html"
+    webbrowser.open(url, new=0, autoraise=True)
