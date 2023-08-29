@@ -53,7 +53,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         pip install -r requirements.txt
-        
+  
+    - name: Embed Version
+      run: python embed-version.py
+
     - name: deploy with pyinstaller
       run: pyinstaller -F .\file_gui.py
       

@@ -1,6 +1,8 @@
 import json
 import os
 import datetime as dt
+from tkinter import StringVar
+from tkinter.filedialog import askdirectory, askopenfile
 
 
 def read_tds(configuration_path):
@@ -55,3 +57,22 @@ def show_in_explorer(configuration_path):
 
     folder = os.path.dirname(configuration_path)
     os.startfile(folder)
+
+
+def open_explorer(entry: StringVar, viewer_type):
+    """function to select new path for files and directories
+
+    Args:
+        entry (StringVar): current path
+        viewer_type (_type_): check if it is a file if not it has to be a directory
+    """
+    if viewer_type == "text-edit-browse-file":
+        parent_directory = os.path.dirname(entry.get())
+        new_file = askopenfile(initialdir=parent_directory)
+        if new_file is not None:
+            entry.set(new_file.name)
+    else:
+        parent_directory = os.path.dirname(entry.get())
+        new_directory = askdirectory(initialdir=parent_directory)
+        if new_directory is not "":
+            entry.set(new_directory)

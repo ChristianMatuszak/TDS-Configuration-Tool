@@ -1,2 +1,4 @@
 pyinstaller
 click
+pywin32
+versiontag

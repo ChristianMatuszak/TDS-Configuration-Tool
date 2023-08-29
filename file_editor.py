@@ -84,6 +84,16 @@ def dict_ent(schema: dict, root_frame, root):
                         textvariable=form_state[property_key],
                         state="readonly",
                     ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+                    ttk.Button(
+                        entry_frame,
+                        text="🗁",
+                        width=3,
+                        command=lambda viewer_type=property_schema[
+                            "viewer"
+                        ], path=form_state[property_key]: open_explorer(
+                            path, viewer_type
+                        ),
+                    ).pack(padx=FRAME_PADDING, pady=2, side=tk.RIGHT)
                 else:
                     ttk.Entry(entry_frame, textvariable=form_state[property_key]).pack(
                         fill=tk.X, ipadx=110, pady=2, side=tk.LEFT

@@ -1,5 +1,7 @@
 import os
-from tkinter import messagebox
+import ctypes, sys
+from pathlib import Path
+import win32com.shell.shell as shell
 
 
 def service_running():
@@ -15,17 +17,22 @@ def service_running():
         return False
 
 
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+
 def start_service():
     """returns the state of the service Tessonics Data Server
 
     Returns:
         text: display the state of Tessonics Data Server service
     """
-    state = os.popen("sc start Tessonics-Data-Service").read()
-    if state.find("RUNNING") != -1:
-        return messagebox.showinfo("start service", "service started")
-    else:
-        return messagebox.showerror("ERROR", "service already running")
+    shell.ShellExecuteEx(
+        lpVerb="runas", lpFile="sc", lpParameters="start Tessonics-Data-Service"
+    )
 
 
 def stop_service():
@@ -34,5 +41,6 @@ def stop_service():
     Returns:
         text: display the state of Tessonics Data Server service
     """
-    state = os.popen("sc stop Tessonics-Data-Service").read()
-    return messagebox.showinfo("stop service", "service stoped")
+    shell.ShellExecuteEx(
+        lpVerb="runas", lpFile="sc", lpParameters="stop Tessonics-Data-Service"
+    )

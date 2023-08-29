@@ -4,7 +4,7 @@ from file_editor import *
 from file_io import *
 from win_service import *
 import click
-
+from version import VERSION
 
 FRAME_PADDING = 5
 
@@ -30,7 +30,7 @@ class App(ttk.Frame):
 
         config_path_label = tk.Label(
             config_path_frame,
-            text="config path:",
+            text="Config Path:",
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.E,
@@ -54,7 +54,7 @@ class App(ttk.Frame):
 
         last_modified_label = tk.Label(
             last_modified_frame,
-            text="last modified:",
+            text="Last Modified:",
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.E,
@@ -85,7 +85,7 @@ class App(ttk.Frame):
 
         service_label = tk.Label(
             service_frame,
-            text="service:",
+            text="Service:",
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.E,
@@ -115,7 +115,7 @@ class App(ttk.Frame):
 
         show_in_explorer_button = ttk.Button(
             config_path_frame,
-            text="show in explorer",
+            text="Show in Explorer",
             command=lambda: show_in_explorer(configuration_path),
         )
         show_in_explorer_button.pack(
@@ -124,13 +124,13 @@ class App(ttk.Frame):
 
         start_button = ttk.Button(
             service_frame,
-            text="start service",
+            text="Start Service",
             command=start_service,
         )
         start_button.pack(side="right", anchor="e", padx=(FRAME_PADDING, FRAME_PADDING))
 
         stop_button = ttk.Button(
-            service_frame, text="stop service", command=stop_service
+            service_frame, text="Stop Service", command=stop_service
         )
         stop_button.pack(side="right", anchor="e", padx=FRAME_PADDING)
 
@@ -142,15 +142,15 @@ class App(ttk.Frame):
             pady=FRAME_PADDING,
         )
 
-        help_button = ttk.Button(bottom_frame, text="help", command=open_help)
+        help_button = ttk.Button(bottom_frame, text="Help", width=1, command=open_help)
         help_button.pack(side=tk.LEFT, expand=1, fill="both", padx=FRAME_PADDING)
 
-        version_number = ttk.Label(bottom_frame, text="Version: 0.10.0")
+        version_number = ttk.Label(bottom_frame, text=f"Version: {VERSION}")
         version_number.pack(side=tk.LEFT, fill="x", pady=FRAME_PADDING)
 
         save_button = ttk.Button(
             bottom_frame,
-            text="save",
+            text="Save",
             command=lambda: save_button_handler(self.tab_state, configuration_path),
         )
         save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH, padx=(400, 5))
@@ -181,25 +181,25 @@ class App(ttk.Frame):
             closing_frame.pack(side="top", expand=True, fill="both")
 
             closing_label = ttk.Label(
-                closing_frame, text="close application without saving"
+                closing_frame, text="close application? unsaved changes will be lost"
             )
             closing_label.pack()
 
             yes_button = ttk.Button(
                 confirm_window,
-                text="yes",
+                text="Yes",
                 command=lambda: confirm_yes(confirm_window, parent),
             )
             yes_button.pack(side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING)
             no_button = ttk.Button(
                 confirm_window,
-                text="no",
+                text="No",
                 command=lambda: confirm_no(confirm_window, window),
             )
             no_button.pack(side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING)
             save_and_exit_button = ttk.Button(
                 confirm_window,
-                text="save and exit",
+                text="Save and Exit",
                 command=lambda: save_and_exit_handler(
                     self.tab_state, configuration_path, parent
                 ),
@@ -234,7 +234,7 @@ class App(ttk.Frame):
 )
 def main(configuration, schema):
     window = tk.Tk()
-    window.title("Editor")
+    window.title("Serverkonfiguration")
     window.geometry("700x700")
     window.resizable(width=0, height=0)
 
