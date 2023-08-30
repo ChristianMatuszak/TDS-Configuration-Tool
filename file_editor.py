@@ -79,7 +79,6 @@ def dict_ent(schema: dict, root_frame, root):
                     form_state[property_key] = tk.StringVar(value=root[property_key])
                 else:
                     form_state[property_key] = tk.StringVar()
-                # if is_file_path(value=root[property_key]):
                 if "viewer" in property_schema:
                     if (
                         property_schema["viewer"] == "text-edit-browse-file"
@@ -188,7 +187,7 @@ def save_and_exit_handler(tab_state, configuration_path, window):
 def confirm_handler(window):
     answer = askyesno(
         title="Close Configuration-Tool",
-        message="close application without saving? \n\n unsaved changes will be lost!",
+        message="close application? \n\n Unsaved changes will be lost!",
     )
 
     if answer:
@@ -198,6 +197,6 @@ def confirm_handler(window):
 
 
 def open_help():
-    """funktion that opens the installation guide in the webbrowser"""
+    """function that opens the installation guide in the webbrowser"""
     url = "https://tessonics.github.io/user-docs/v4/installation-guide/fulltext.html"
     webbrowser.open(url, new=0, autoraise=True)
