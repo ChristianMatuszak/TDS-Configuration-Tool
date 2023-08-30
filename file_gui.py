@@ -4,13 +4,13 @@ from file_editor import *
 from file_io import *
 from win_service import *
 import click
-
+from version import VERSION
 
 FRAME_PADDING = 5
 
 
 class App(ttk.Frame):
-    def __init__(self, parent, configuration_path, schema):
+    def __init__(self, parent, configuration_path, schema, window):
         ttk.Frame.__init__(self)
         self.parent = parent
 
@@ -30,7 +30,7 @@ class App(ttk.Frame):
 
         config_path_label = tk.Label(
             config_path_frame,
-            text="config path:",
+            text="Config Path:",
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.E,
@@ -54,7 +54,7 @@ class App(ttk.Frame):
 
         last_modified_label = tk.Label(
             last_modified_frame,
-            text="last modified:",
+            text="Last Modified:",
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.E,
@@ -64,7 +64,9 @@ class App(ttk.Frame):
 
         last_modified_values_label = tk.Label(
             last_modified_frame,
-            text=last_modified(configuration_path),
+            text=last_modified(configuration_path)
+            if configuration_path is not None
+            else "not loaded",
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.W,
@@ -83,7 +85,7 @@ class App(ttk.Frame):
 
         service_label = tk.Label(
             service_frame,
-            text="service:",
+            text="Service:",
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.E,
@@ -113,7 +115,7 @@ class App(ttk.Frame):
 
         show_in_explorer_button = ttk.Button(
             config_path_frame,
-            text="show in explorer",
+            text="Show in Explorer",
             command=lambda: show_in_explorer(configuration_path),
         )
         show_in_explorer_button.pack(
@@ -122,13 +124,13 @@ class App(ttk.Frame):
 
         start_button = ttk.Button(
             service_frame,
-            text="start service",
+            text="Start Service",
             command=start_service,
         )
         start_button.pack(side="right", anchor="e", padx=(FRAME_PADDING, FRAME_PADDING))
 
         stop_button = ttk.Button(
-            service_frame, text="stop service", command=stop_service
+            service_frame, text="Stop Service", command=stop_service
         )
         stop_button.pack(side="right", anchor="e", padx=FRAME_PADDING)
 
@@ -136,20 +138,36 @@ class App(ttk.Frame):
         bottom_frame.pack(
             side="bottom",
             fill="both",
-            padx=(480, 5),
+            padx=(5, 5),
             pady=FRAME_PADDING,
         )
 
+        help_button = ttk.Button(bottom_frame, text="Help", width=1, command=open_help)
+        help_button.pack(side=tk.LEFT, expand=1, fill="both", padx=FRAME_PADDING)
+
+        version_number = ttk.Label(bottom_frame, text=f"Version: {VERSION}")
+        version_number.pack(side=tk.LEFT, fill="x", pady=FRAME_PADDING)
+
         save_button = ttk.Button(
             bottom_frame,
-            text="save",
-            command=lambda: save(self.tab_state, configuration_path),
+            text="Save",
+            command=lambda: save_and_exit_handler(
+                self.tab_state, configuration_path, parent
+            ),
         )
-        save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
+        save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH, padx=(400, 5))
 
-        # function to go through the schema.json file
-        # and create Tabs for every key
+        def close_app():
+            """Function to prevent accidental closure and query whether you are sure with yes, no and save and exit buttons"""
+            window.attributes("-disabled", True)
+
+            confirm_handler(window)
+
         self.tab_state = populate_tabs(read_schema(schema), frm, tds)
+        parent.protocol("WM_DELETE_WINDOW", close_app)
+
+    def quit_application(self):
+        self.window.destroy()
 
     def run(self):
         try:
@@ -169,7 +187,7 @@ class App(ttk.Frame):
 )
 def main(configuration, schema):
     window = tk.Tk()
-    window.title("Editor")
+    window.title("TDS Configuration-Tool")
     window.geometry("700x700")
     window.resizable(width=0, height=0)
 
@@ -180,7 +198,7 @@ def main(configuration, schema):
     style.configure("TLabel", backgounrd="Grey")
     style.configure("TLabelframe", background="dodgerblue")
 
-    app = App(window, configuration, schema)
+    app = App(window, configuration, schema, window)
     app.pack(fill="both", expand=True)
     app.run()
 

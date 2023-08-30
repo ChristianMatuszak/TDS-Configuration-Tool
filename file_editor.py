@@ -2,6 +2,9 @@ import tkinter as tk
 from file_io import *
 from tkinter import messagebox
 from tkinter import ttk
+from tkinter.messagebox import askyesno
+import sys
+import webbrowser
 
 FRAME_PADDING = 5
 
@@ -24,8 +27,9 @@ def populate_tabs(schema: dict, root, tds):
     for property_key, property_schema in schema["properties"].items():
         body_frame = ttk.Frame()
         body_frame.pack(fill="both", expand=True)
+
         form_tab[property_key] = dict_ent(
-            property_schema, body_frame, tds[property_key]
+            property_schema, body_frame, tds[property_key] if tds is not None else None
         )
         notebook.add(body_frame, text=property_schema["title"])
 
@@ -50,7 +54,7 @@ def dict_ent(schema: dict, root_frame, root):
             )
             frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
             form_state[property_key] = dict_ent(
-                property_schema, frm, root[property_key]
+                property_schema, frm, root[property_key] if root is not None else None
             )
         else:
             entry_frame = tk.Frame(
@@ -71,38 +75,53 @@ def dict_ent(schema: dict, root_frame, root):
             )
 
             if property_schema["type"] == "string":
-                if property_key in root:
+                if root is not None and property_key in root:
                     form_state[property_key] = tk.StringVar(value=root[property_key])
-                    ttk.Entry(
-                        entry_frame,
-                        textvariable=form_state[property_key],
-                    ).pack(
-                        fill=tk.X,
-                        ipadx=110,
-                        pady=2,
-                        side=tk.LEFT,
-                    )
                 else:
                     form_state[property_key] = tk.StringVar()
-            elif property_schema["type"] == "integer":
-                if property_key in root:
-                    form_state[property_key] = tk.IntVar(value=root[property_key])
-                    ttk.Entry(
-                        entry_frame,
-                        textvariable=form_state[property_key],
-                        validate="key",
-                        validatecommand=(root_frame.register(validate_int), "%S"),
-                    ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+                if "viewer" in property_schema:
+                    if (
+                        property_schema["viewer"] == "text-edit-browse-file"
+                        or "text-edit-browse-dir"
+                    ):
+                        ttk.Entry(
+                            entry_frame,
+                            textvariable=form_state[property_key],
+                            state="readonly",
+                        ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+                        ttk.Button(
+                            entry_frame,
+                            text="🗁",
+                            width=3,
+                            command=lambda viewer_type=property_schema[
+                                "viewer"
+                            ], path=form_state[property_key]: open_explorer(
+                                path, viewer_type
+                            ),
+                        ).pack(padx=FRAME_PADDING, pady=2, side=tk.RIGHT)
                 else:
-                    form_state[property_key] = tk.IntVar(0)
+                    ttk.Entry(entry_frame, textvariable=form_state[property_key]).pack(
+                        fill=tk.X, ipadx=110, pady=2, side=tk.LEFT
+                    )
+            elif property_schema["type"] == "integer":
+                if root is not None and property_key in root:
+                    form_state[property_key] = tk.IntVar(value=root[property_key])
+                else:
+                    form_state[property_key] = tk.IntVar(value=0)
+                ttk.Entry(
+                    entry_frame,
+                    textvariable=form_state[property_key],
+                    validate="key",
+                    validatecommand=(root_frame.register(validate_int), "%S"),
+                ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
             elif property_schema["type"] == "boolean":
-                if property_key in root:
+                if root is not None and property_key in root:
                     form_state[property_key] = tk.BooleanVar(value=root[property_key])
-                    ttk.Checkbutton(
-                        entry_frame, variable=form_state[property_key]
-                    ).pack(fill=tk.X, ipadx=172, pady=2, side=tk.LEFT, anchor="w")
                 else:
                     form_state[property_key] = tk.BooleanVar()
+                ttk.Checkbutton(entry_frame, variable=form_state[property_key]).pack(
+                    fill=tk.X, ipadx=172, pady=2, side=tk.LEFT, anchor="w"
+                )
     return form_state
 
 
@@ -122,8 +141,11 @@ def validate_int(new_text):
         return False
 
 
-def save(form_state: dict, configuration_file):
+def save(form_state: dict, configuration_file, exit_program=False):
     """save all changes in the tds-server.json file"""
+
+    if configuration_file is None:
+        configuration_file = "C:\\ProgramData\\tessonics\\tds2\\tds-server.json"
 
     def iter_form(parent: dict):
         """function to save changes done by the user
@@ -146,3 +168,35 @@ def save(form_state: dict, configuration_file):
 
     save_tds(result, configuration_file)
     messagebox.showinfo("saved", "changes saved")
+    if exit_program:
+        sys.exit()
+
+
+def save_and_exit_handler(tab_state, configuration_path, window):
+    """function to give the save function the exit_program = True argument
+    after pressing the save_and_exit button
+
+    Args:
+        tab_state (dict): the dict with all changes from the entries
+        configuration_path (str): The path of the tds-server .json file to save the changes
+        window (ttk.Frame): Frame that will be closed after pressing the button
+    """
+    save(tab_state, configuration_path, exit_program=False)
+
+
+def confirm_handler(window):
+    answer = askyesno(
+        title="Close Configuration-Tool",
+        message="close application? \n\n Unsaved changes will be lost!",
+    )
+
+    if answer:
+        window.destroy()
+    else:
+        window.attributes("-disabled", False)
+
+
+def open_help():
+    """function that opens the installation guide in the webbrowser"""
+    url = "https://tessonics.github.io/user-docs/v4/installation-guide/fulltext.html"
+    webbrowser.open(url, new=0, autoraise=True)
