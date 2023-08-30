@@ -17,13 +17,6 @@ def service_running():
         return False
 
 
-def is_admin():
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
-        return False
-
-
 def start_service():
     """returns the state of the service Tessonics Data Server
 

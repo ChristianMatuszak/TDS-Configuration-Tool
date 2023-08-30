@@ -2,6 +2,7 @@ import tkinter as tk
 from file_io import *
 from tkinter import messagebox
 from tkinter import ttk
+from tkinter.messagebox import askyesno
 import sys
 import webbrowser
 
@@ -78,22 +79,27 @@ def dict_ent(schema: dict, root_frame, root):
                     form_state[property_key] = tk.StringVar(value=root[property_key])
                 else:
                     form_state[property_key] = tk.StringVar()
-                if is_file_path(value=root[property_key]):
-                    ttk.Entry(
-                        entry_frame,
-                        textvariable=form_state[property_key],
-                        state="readonly",
-                    ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
-                    ttk.Button(
-                        entry_frame,
-                        text="🗁",
-                        width=3,
-                        command=lambda viewer_type=property_schema[
-                            "viewer"
-                        ], path=form_state[property_key]: open_explorer(
-                            path, viewer_type
-                        ),
-                    ).pack(padx=FRAME_PADDING, pady=2, side=tk.RIGHT)
+                # if is_file_path(value=root[property_key]):
+                if "viewer" in property_schema:
+                    if (
+                        property_schema["viewer"] == "text-edit-browse-file"
+                        or "text-edit-browse-dir"
+                    ):
+                        ttk.Entry(
+                            entry_frame,
+                            textvariable=form_state[property_key],
+                            state="readonly",
+                        ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+                        ttk.Button(
+                            entry_frame,
+                            text="🗁",
+                            width=3,
+                            command=lambda viewer_type=property_schema[
+                                "viewer"
+                            ], path=form_state[property_key]: open_explorer(
+                                path, viewer_type
+                            ),
+                        ).pack(padx=FRAME_PADDING, pady=2, side=tk.RIGHT)
                 else:
                     ttk.Entry(entry_frame, textvariable=form_state[property_key]).pack(
                         fill=tk.X, ipadx=110, pady=2, side=tk.LEFT
@@ -118,20 +124,6 @@ def dict_ent(schema: dict, root_frame, root):
                     fill=tk.X, ipadx=172, pady=2, side=tk.LEFT, anchor="w"
                 )
     return form_state
-
-
-def is_file_path(value):
-    """function to test string if they are file path or not
-
-    Args:
-        value (str): string that needs to be testet
-
-    Returns:
-        boolean: return true if it is a pth and False if it's not or an url
-    """
-    if value.startswith(("http://", "https://")):
-        return False
-    return os.path.isfile(value) or os.path.dirname(value)
 
 
 def validate_int(new_text):
@@ -181,17 +173,6 @@ def save(form_state: dict, configuration_file, exit_program=False):
         sys.exit()
 
 
-def save_button_handler(tab_state, configuration_path):
-    """function to give the save function the exit_program = False argmunet
-    after pressing the save button
-
-    Args:
-        tab_state (dict): the dict with all changes from the entries
-        configuration_path (str): The path of the tds-server .json file to save the changes
-    """
-    save(tab_state, configuration_path, exit_program=False)
-
-
 def save_and_exit_handler(tab_state, configuration_path, window):
     """function to give the save function the exit_program = True argument
     after pressing the save_and_exit button
@@ -201,28 +182,19 @@ def save_and_exit_handler(tab_state, configuration_path, window):
         configuration_path (str): The path of the tds-server .json file to save the changes
         window (ttk.Frame): Frame that will be closed after pressing the button
     """
-    save(tab_state, configuration_path, exit_program=True)
+    save(tab_state, configuration_path, exit_program=False)
 
 
-def confirm_no(confirm_window, window):
-    """function not to close the confirm_window after pressing the no button
+def confirm_handler(window):
+    answer = askyesno(
+        title="Close Configuration-Tool",
+        message="close application without saving? \n\n unsaved changes will be lost!",
+    )
 
-    Args:
-        confirm_window (ttk.Frame): frame with the 3 buttons if you want to close the application
-    """
-    confirm_window.destroy()
-    window.attributes("-disabled", False)
-
-
-def confirm_yes(confirm_window, window):
-    """function to close the confirm_window after pressing the yes button
-
-    Args:
-        confirm_window (ttk.Frame): frame with the 3 buttons if you want to close the application_
-        window (ttk.Frame): Frame of the main application
-    """
-    confirm_window.destroy()
-    window.destroy()
+    if answer:
+        window.destroy()
+    else:
+        window.attributes("-disabled", False)
 
 
 def open_help():

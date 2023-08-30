@@ -151,7 +151,9 @@ class App(ttk.Frame):
         save_button = ttk.Button(
             bottom_frame,
             text="Save",
-            command=lambda: save_button_handler(self.tab_state, configuration_path),
+            command=lambda: save_and_exit_handler(
+                self.tab_state, configuration_path, parent
+            ),
         )
         save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH, padx=(400, 5))
 
@@ -159,57 +161,8 @@ class App(ttk.Frame):
             """Function to prevent accidental closure and query whether you are sure with yes, no and save and exit buttons"""
             window.attributes("-disabled", True)
 
-            confirm_window = tk.Toplevel(parent)
-            confirm_window.title("Exit")
-            confirm_window.geometry("320x150")
-            confirm_window.resizable(False, False)
-            confirm_window.configure(
-                highlightbackground="dodgerblue", highlightthickness=1
-            )
+            confirm_handler(window)
 
-            confirm_window.update_idletasks()
-            width = confirm_window.winfo_width()
-            height = confirm_window.winfo_height()
-            x = (window.winfo_width() // 2) - (width // 2) + window.winfo_x()
-            y = (window.winfo_height() // 2) - (height // 2) + window.winfo_y()
-            confirm_window.geometry(f"+{x}+{y}")
-            confirm_window.resizable(False, False)
-
-            confirm_window.overrideredirect(True)
-
-            closing_frame = ttk.Frame(confirm_window)
-            closing_frame.pack(side="top", expand=True, fill="both")
-
-            closing_label = ttk.Label(
-                closing_frame, text="close application? unsaved changes will be lost"
-            )
-            closing_label.pack()
-
-            yes_button = ttk.Button(
-                confirm_window,
-                text="Yes",
-                command=lambda: confirm_yes(confirm_window, parent),
-            )
-            yes_button.pack(side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING)
-            no_button = ttk.Button(
-                confirm_window,
-                text="No",
-                command=lambda: confirm_no(confirm_window, window),
-            )
-            no_button.pack(side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING)
-            save_and_exit_button = ttk.Button(
-                confirm_window,
-                text="Save and Exit",
-                command=lambda: save_and_exit_handler(
-                    self.tab_state, configuration_path, parent
-                ),
-            )
-            save_and_exit_button.pack(
-                side=tk.LEFT, padx=FRAME_PADDING, pady=FRAME_PADDING
-            )
-
-        # function to go through the schema.json file
-        # and create Tabs for every key
         self.tab_state = populate_tabs(read_schema(schema), frm, tds)
         parent.protocol("WM_DELETE_WINDOW", close_app)
 
@@ -234,7 +187,7 @@ class App(ttk.Frame):
 )
 def main(configuration, schema):
     window = tk.Tk()
-    window.title("Serverkonfiguration")
+    window.title("TDS Configuration-Tool")
     window.geometry("700x700")
     window.resizable(width=0, height=0)
 
