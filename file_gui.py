@@ -143,13 +143,8 @@ class App(ttk.Frame):
             pady=FRAME_PADDING,
         )
 
-<<<<<<< HEAD
         help_button = ttk.Button(bottom_frame, text="Help", command=open_help)
-        help_button.pack(side=tk.LEFT, expand=1, fill="both", padx=10)
-=======
-        help_button = ttk.Button(bottom_frame, text="Help", width=2, command=open_help)
-        help_button.pack(side=tk.LEFT, expand=1, fill="both", padx=FRAME_PADDING)
->>>>>>> 600eee2bf792106eb5005699f62daddd6ebf327b
+        help_button.pack(side=tk.LEFT, fill="both", padx=FRAME_PADDING)
 
         version_number = ttk.Label(bottom_frame, text=f"Version: {VERSION}")
         version_number.pack(side=tk.LEFT, fill="x", pady=FRAME_PADDING)
@@ -159,7 +154,7 @@ class App(ttk.Frame):
             text="Save",
             command=lambda: save_handler(self.tab_state, configuration_path, parent),
         )
-        save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH, padx=(400, 5))
+        save_button.pack(side=tk.RIGHT, fill=tk.BOTH, padx=(400, 5))
 
         def close_app():
             """Function to prevent accidental closure and query whether you are sure with yes, no and save and exit buttons"""

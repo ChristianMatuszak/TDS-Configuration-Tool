@@ -65,8 +65,8 @@ def dict_ent(schema: dict, root_frame, root):
             )
             entry_frame.pack(expand=1, fill=tk.BOTH)
             tk.Label(entry_frame, text=property_schema["title"], anchor="w").pack(
-                padx=0,
-                pady=5,
+                padx=FRAME_PADDING,
+                pady=FRAME_PADDING,
                 side=tk.LEFT,
             )
             if "description" in property_schema:
