@@ -3,8 +3,8 @@ from file_io import *
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter.messagebox import askyesno
-import sys
 import webbrowser
+from idlelib.tooltip import Hovertip
 
 FRAME_PADDING = 5
 
@@ -56,24 +56,31 @@ def dict_ent(schema: dict, root_frame, root):
             form_state[property_key] = dict_ent(
                 property_schema, frm, root[property_key] if root is not None else None
             )
+
         else:
             entry_frame = tk.Frame(
                 root_frame,
                 padx=FRAME_PADDING,
                 pady=FRAME_PADDING,
             )
-            entry_frame.pack(
-                expand=1,
-                fill=tk.BOTH,
-            )
+            entry_frame.pack(expand=1, fill=tk.BOTH)
             tk.Label(entry_frame, text=property_schema["title"], anchor="w").pack(
-                expand=1,
-                fill=tk.BOTH,
                 padx=0,
                 pady=5,
                 side=tk.LEFT,
             )
-
+            if "description" in property_schema:
+                info = tk.Label(
+                    entry_frame,
+                    text="🛈",
+                    anchor="w",
+                )
+                info.pack(
+                    side="left",
+                )
+                Hovertip(info, property_schema["description"])
+            seperator_label = tk.Label(entry_frame, anchor="w")
+            seperator_label.pack(expand=1, side="left", fill=tk.BOTH)
             if property_schema["type"] == "string":
                 if root is not None and property_key in root:
                     form_state[property_key] = tk.StringVar(value=root[property_key])
@@ -141,7 +148,7 @@ def validate_int(new_text):
         return False
 
 
-def save(form_state: dict, configuration_file, exit_program=False):
+def save(form_state: dict, configuration_file):
     """save all changes in the tds-server.json file"""
 
     if configuration_file is None:
@@ -168,11 +175,9 @@ def save(form_state: dict, configuration_file, exit_program=False):
 
     save_tds(result, configuration_file)
     messagebox.showinfo("saved", "changes saved")
-    if exit_program:
-        sys.exit()
 
 
-def save_and_exit_handler(tab_state, configuration_path, window):
+def save_handler(tab_state, configuration_path, window):
     """function to give the save function the exit_program = True argument
     after pressing the save_and_exit button
 
@@ -181,7 +186,10 @@ def save_and_exit_handler(tab_state, configuration_path, window):
         configuration_path (str): The path of the tds-server .json file to save the changes
         window (ttk.Frame): Frame that will be closed after pressing the button
     """
-    save(tab_state, configuration_path, exit_program=False)
+    save(
+        tab_state,
+        configuration_path,
+    )
 
 
 def confirm_handler(window):

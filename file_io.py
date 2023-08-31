@@ -3,6 +3,9 @@ import os
 import datetime as dt
 from tkinter import StringVar
 from tkinter.filedialog import askdirectory, askopenfile
+from os.path import exists
+import subprocess
+import sys
 
 
 def read_tds(configuration_path):
@@ -11,14 +14,27 @@ def read_tds(configuration_path):
     Returns:
         return: return dict for the json file
     """
-    if configuration_path is None:
-        configuration_path = "tds-server.json"
+    if configuration_path is not None and exists(configuration_path):
+        # if not os.path.isfile(configuration_path):
+        #    return None, None
+        with open(configuration_path, "r") as f:
+            return (configuration_path, json.load(f))
 
-    if not os.path.isfile(configuration_path):
+    elif configuration_path is None:
+        result_path = subprocess.run(
+            [
+                "C:/Program Files/Tessonics/TDS2/tds-server.exe",
+                "show-config",
+                "origin",
+            ],
+            capture_output=True,
+        )
+        if result_path.returncode == 0:
+            configuration_path = result_path.stdout.strip().decode()
+            with open(configuration_path, "r") as f:
+                return (configuration_path, json.load(f))
+    else:
         return None, None
-
-    with open(configuration_path, "r") as f:
-        return (configuration_path, json.load(f))
 
 
 def read_schema(default_schema):
@@ -27,11 +43,18 @@ def read_schema(default_schema):
     Returns:
         return: return dict for the json file
     """
+    # 1. Load from command line
     if default_schema is not None:
         return json.loads(default_schema)
 
-    with open("schema.json", "r") as f:
-        return json.load(f)
+    # 2. Load from TDS Application
+    else:
+        result = subprocess.run(
+            ["C:/Program Files/Tessonics/TDS2/tds-server.exe", "show-config", "schema"],
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            return json.loads(result.stdout)
 
 
 def save_tds(config, configuration_path):
@@ -74,5 +97,15 @@ def open_explorer(entry: StringVar, viewer_type):
     else:
         parent_directory = os.path.dirname(entry.get())
         new_directory = askdirectory(initialdir=parent_directory)
-        if new_directory is not "":
+        if new_directory != "":
             entry.set(new_directory)
+
+
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)

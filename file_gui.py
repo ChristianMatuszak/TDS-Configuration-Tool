@@ -143,8 +143,13 @@ class App(ttk.Frame):
             pady=FRAME_PADDING,
         )
 
+<<<<<<< HEAD
         help_button = ttk.Button(bottom_frame, text="Help", command=open_help)
         help_button.pack(side=tk.LEFT, expand=1, fill="both", padx=10)
+=======
+        help_button = ttk.Button(bottom_frame, text="Help", width=2, command=open_help)
+        help_button.pack(side=tk.LEFT, expand=1, fill="both", padx=FRAME_PADDING)
+>>>>>>> 600eee2bf792106eb5005699f62daddd6ebf327b
 
         version_number = ttk.Label(bottom_frame, text=f"Version: {VERSION}")
         version_number.pack(side=tk.LEFT, fill="x", pady=FRAME_PADDING)
