@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import PhotoImage
 from file_editor import *
 from file_io import *
 from win_service import *
@@ -66,7 +67,7 @@ class App(ttk.Frame):
             last_modified_frame,
             text=last_modified(configuration_path)
             if configuration_path is not None
-            else "not loaded",
+            else "Not Loaded",
             padx=FRAME_PADDING,
             pady=FRAME_PADDING,
             anchor=tk.W,
@@ -142,8 +143,8 @@ class App(ttk.Frame):
             pady=FRAME_PADDING,
         )
 
-        help_button = ttk.Button(bottom_frame, text="Help", width=1, command=open_help)
-        help_button.pack(side=tk.LEFT, expand=1, fill="both", padx=FRAME_PADDING)
+        help_button = ttk.Button(bottom_frame, text="Help", command=open_help)
+        help_button.pack(side=tk.LEFT, expand=1, fill="both", padx=10)
 
         version_number = ttk.Label(bottom_frame, text=f"Version: {VERSION}")
         version_number.pack(side=tk.LEFT, fill="x", pady=FRAME_PADDING)
@@ -151,9 +152,7 @@ class App(ttk.Frame):
         save_button = ttk.Button(
             bottom_frame,
             text="Save",
-            command=lambda: save_and_exit_handler(
-                self.tab_state, configuration_path, parent
-            ),
+            command=lambda: save_handler(self.tab_state, configuration_path, parent),
         )
         save_button.pack(side=tk.LEFT, expand=1, fill=tk.BOTH, padx=(400, 5))
 
@@ -188,10 +187,12 @@ class App(ttk.Frame):
 def main(configuration, schema):
     window = tk.Tk()
     window.title("TDS Configuration-Tool")
-    window.geometry("700x700")
     window.resizable(width=0, height=0)
 
-    window.tk.call("source", "azure.tcl")
+    icon = PhotoImage(file=resource_path("resources/favicon.png"))
+    window.iconphoto(False, icon)
+
+    window.tk.call("source", resource_path("resources/azure.tcl"))
     window.tk.call("set_theme", "light")
 
     style = ttk.Style()
