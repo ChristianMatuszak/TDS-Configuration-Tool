@@ -44,6 +44,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
     - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
@@ -53,12 +56,16 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         pip install -r requirements.txt
-  
-    - name: Embed Version
-      run: python embed-version.py
+   
+    - name: Get tags
+      run: |
+        git describe --tags
+        python embed-version.py
 
     - name: deploy with pyinstaller
-      run: pyinstaller -F .\file_gui.py
+      run: |
+        pyinstaller --onefile -n "tds_configuration_tool" --add-data "resources/favicon.png;resources" --add-data "resources/azure.tcl;resources" --add-data "resources/theme;resources/theme" --noconsole file_gui.py
+        
       
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.2
@@ -66,4 +73,4 @@ jobs:
         # Artifact name
         name: JSON-Editor
         # A file, directory or wildcard pattern that describes what to upload
-        path: .\dist\file_gui.exe
+        path: .\dist\tds_configuration_tool.exe
