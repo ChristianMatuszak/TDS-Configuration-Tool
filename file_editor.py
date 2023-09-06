@@ -4,6 +4,8 @@ from tkinter import messagebox
 from tkinter import ttk
 from tkinter.messagebox import askyesno
 import webbrowser
+import ctypes
+import win32com.shell.shell as shell
 from idlelib.tooltip import Hovertip
 
 FRAME_PADDING = 5
@@ -173,8 +175,19 @@ def save(form_state: dict, configuration_file):
 
     result = iter_form(form_state)
 
-    save_tds(result, configuration_file)
-    messagebox.showinfo("saved", "changes saved")
+    try:
+        save_tds(result, configuration_file)
+    except PermissionError:
+        args = f"-Command {{Set-Content -Path \"{configuration_file}2\" -Value '{json.dumps(result)}'}}"
+        cmd_result = shell.ShellExecuteEx(
+            lpVerb="runas",
+            lpFile="powershell.exe",
+            lpParameters=args,
+        )
+        print(ctypes.FormatError(ctypes.GetLastError()))
+        print(cmd_result)
+
+    messagebox.showinfo("Saved", "Changes have been successfully saved")
 
 
 def save_handler(tab_state, configuration_path, window):

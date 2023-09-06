@@ -122,7 +122,12 @@ class App(ttk.Frame):
         show_in_explorer_button.pack(
             side="right", anchor="e", padx=(FRAME_PADDING, FRAME_PADDING)
         )
-
+        tds_browser = ttk.Button(
+            service_frame,
+            text="Show in Browser",
+            command=lambda: open_browser(tds),
+        )
+        tds_browser.pack(side="right", anchor="e", padx=(FRAME_PADDING, FRAME_PADDING))
         start_button = ttk.Button(
             service_frame,
             text="Start Service",
@@ -133,7 +138,7 @@ class App(ttk.Frame):
         stop_button = ttk.Button(
             service_frame, text="Stop Service", command=stop_service
         )
-        stop_button.pack(side="right", anchor="e", padx=FRAME_PADDING)
+        stop_button.pack(side="right", anchor="e", padx=(50, FRAME_PADDING))
 
         bottom_frame = ttk.Frame(self)
         bottom_frame.pack(

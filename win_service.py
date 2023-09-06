@@ -2,6 +2,8 @@ import os
 import ctypes, sys
 from pathlib import Path
 import win32com.shell.shell as shell
+import webbrowser
+from file_editor import dict_ent
 
 
 def service_running():
@@ -37,3 +39,8 @@ def stop_service():
     shell.ShellExecuteEx(
         lpVerb="runas", lpFile="sc", lpParameters="stop Tessonics-Data-Service"
     )
+
+
+def open_browser(configuration):
+    url = configuration["server"]["url"] + ":" + str(configuration["server"]["port"])
+    webbrowser.open(url, new=0, autoraise=True)
