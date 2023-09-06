@@ -178,16 +178,9 @@ def save(form_state: dict, configuration_file):
     try:
         save_tds(result, configuration_file)
     except PermissionError:
-        args = f"-Command {{Set-Content -Path \"{configuration_file}2\" -Value '{json.dumps(result)}'}}"
-        cmd_result = shell.ShellExecuteEx(
-            lpVerb="runas",
-            lpFile="powershell.exe",
-            lpParameters=args,
+        messagebox.showerror(
+            "Error", " Permission denied. \n Please restart programm as admin!"
         )
-        print(ctypes.FormatError(ctypes.GetLastError()))
-        print(cmd_result)
-
-    messagebox.showinfo("Saved", "Changes have been successfully saved")
 
 
 def save_handler(tab_state, configuration_path, window):
