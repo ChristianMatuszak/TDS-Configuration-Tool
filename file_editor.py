@@ -4,8 +4,6 @@ from tkinter import messagebox
 from tkinter import ttk
 from tkinter.messagebox import askyesno
 import webbrowser
-import ctypes
-import win32com.shell.shell as shell
 from idlelib.tooltip import Hovertip
 
 FRAME_PADDING = 5

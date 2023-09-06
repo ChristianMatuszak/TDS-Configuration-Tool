@@ -1,9 +1,7 @@
 import os
-import ctypes, sys
-from pathlib import Path
 import win32com.shell.shell as shell
 import webbrowser
-from file_editor import dict_ent
+from tkinter import messagebox
 
 
 def service_running():
@@ -42,5 +40,18 @@ def stop_service():
 
 
 def open_browser(configuration):
-    url = configuration["server"]["url"] + ":" + str(configuration["server"]["port"])
-    webbrowser.open(url, new=0, autoraise=True)
+    if "server" in configuration and "url" in configuration["server"]:
+        port = ""
+        if "port" in configuration["server"]:
+            port = f":{configuration['server']['port']}"
+
+        url = configuration["server"]["url"] + port
+        webbrowser.open(url, new=0, autoraise=True)
+        return
+    messagebox.showerror("Error", "Missing URL and/or Port in configuration")
+
+
+# def open_browser(configuration):
+#
+#    url = configuration["server"]["url"] + ":" + str(configuration["server"]["port"])
+#    webbrowser.open(url, new=0, autoraise=True)
