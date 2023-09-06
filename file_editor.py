@@ -177,6 +177,7 @@ def save(form_state: dict, configuration_file):
 
     try:
         save_tds(result, configuration_file)
+        messagebox.showinfo("Saved", "Changes have been successfully saved.")
     except PermissionError:
         messagebox.showerror(
             "Error", " Permission denied. \n Please restart programm as admin!"
