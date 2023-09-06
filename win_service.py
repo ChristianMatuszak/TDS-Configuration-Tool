@@ -1,7 +1,7 @@
 import os
-import ctypes, sys
-from pathlib import Path
 import win32com.shell.shell as shell
+import webbrowser
+from tkinter import messagebox
 
 
 def service_running():
@@ -37,3 +37,15 @@ def stop_service():
     shell.ShellExecuteEx(
         lpVerb="runas", lpFile="sc", lpParameters="stop Tessonics-Data-Service"
     )
+
+
+def open_browser(configuration):
+    if "server" in configuration and "url" in configuration["server"]:
+        port = ""
+        if "port" in configuration["server"]:
+            port = f":{configuration['server']['port']}"
+
+        url = configuration["server"]["url"] + port
+        webbrowser.open(url, new=0, autoraise=True)
+        return
+    messagebox.showerror("Error", "Missing URL and/or Port in configuration")

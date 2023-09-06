@@ -173,8 +173,13 @@ def save(form_state: dict, configuration_file):
 
     result = iter_form(form_state)
 
-    save_tds(result, configuration_file)
-    messagebox.showinfo("saved", "changes saved")
+    try:
+        save_tds(result, configuration_file)
+        messagebox.showinfo("Saved", "Changes have been successfully saved.")
+    except PermissionError:
+        messagebox.showerror(
+            "Error", " Permission denied. \n Please restart programm as admin!"
+        )
 
 
 def save_handler(tab_state, configuration_path, window):
