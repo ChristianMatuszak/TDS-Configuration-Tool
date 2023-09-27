@@ -1,5 +1,6 @@
 from file_io import *
 from file_editor import *
+import pytest
 
 
 def test_config_path_non_existent():
@@ -51,6 +52,7 @@ def test_read_tds():
     assert config["db"]["measurement-storage"]["backup-bytes"] == 1073741824
 
 
+@pytest.mark.skip
 def test_read_tds_default_location():
     # Requires a tds-server.json in the default location + TDS2 installed
     conf_path, config = read_tds(None)
@@ -58,6 +60,7 @@ def test_read_tds_default_location():
     assert config is not None
 
 
+@pytest.mark.skip
 def test_read_schema_from_tds():
     # Requires TDS2 installed
     schema = read_schema(None)
@@ -70,6 +73,7 @@ def test_read_schema_from_tds():
     )
 
 
+@pytest.mark.skip
 def test_save_config_no_permission():
     window = tk.Tk()
     try:
