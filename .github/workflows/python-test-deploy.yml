@@ -60,7 +60,7 @@ jobs:
     - name: Get tags
       run: |
         git describe --tags
-        python embed-version.py
+        python src/embed-version.py
 
     - name: deploy with pyinstaller
       run: |
