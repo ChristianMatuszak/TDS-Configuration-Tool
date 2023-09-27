@@ -64,7 +64,7 @@ jobs:
 
     - name: deploy with pyinstaller
       run: |
-        pyinstaller --onefile -n "tds_configuration_tool" --add-data "resources/favicon.png;resources" --add-data "resources/azure.tcl;resources" --add-data "resources/theme;resources/theme" --noconsole file_gui.py
+        pyinstaller --onefile -n "tds_configuration_tool" --add-data "resources/favicon.png;resources" --add-data "resources/azure.tcl;resources" --add-data "resources/theme;resources/theme" --noconsole src/file_gui.py
         
       
     - name: Upload a Build Artifact
