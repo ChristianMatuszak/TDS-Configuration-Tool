@@ -20,7 +20,7 @@ def populate_tabs(schema: dict, root, tds):
     Returns:
         string: returns a dict of all state variables of the tabs form
     """
-    form_tab = {}
+    tab_form_state = {}
     notebook = ttk.Notebook(root)
     notebook.pack(fill="both", expand=True, pady=FRAME_PADDING)
 
@@ -28,12 +28,12 @@ def populate_tabs(schema: dict, root, tds):
         body_frame = ttk.Frame()
         body_frame.pack(fill="both", expand=True)
 
-        form_tab[property_key] = dict_ent(
+        tab_form_state[property_key] = populate_tab_form(
             property_schema, body_frame, tds[property_key] if tds is not None and property_key in tds else None
         )
         notebook.add(body_frame, text=property_schema["title"])
 
-    return form_tab
+    return tab_form_state
 
 def obj_entry(parent_dict, property_key, property_schema, root_frame):
     frm = ttk.LabelFrame(
@@ -43,7 +43,7 @@ def obj_entry(parent_dict, property_key, property_schema, root_frame):
         expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING)
     )
     frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
-    return dict_ent(
+    return populate_tab_form(
         property_schema, frm, parent_dict[property_key] if parent_dict is not None else None
     )
     
@@ -127,7 +127,7 @@ def bool_entry(frame, parent_dict, key):
     )
     return field
 
-def dict_ent(schema: dict, root_frame, root):
+def populate_tab_form(schema: dict, root_frame, root):
     """creates a frame and entry for all entries in the tds-server.json file
 
     Args:
