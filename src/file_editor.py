@@ -35,6 +35,97 @@ def populate_tabs(schema: dict, root, tds):
 
     return form_tab
 
+def obj_entry(parent_dict, property_key, property_schema, root_frame):
+    frm = ttk.LabelFrame(
+        root_frame, text=property_schema["title"], width=10, height=5
+    )
+    frm.pack(
+        expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING)
+    )
+    frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
+    return dict_ent(
+        property_schema, frm, parent_dict[property_key] if parent_dict is not None else None
+    )
+    
+def create_entry_frame(root_frame, property_schema):
+    entry_frame = tk.Frame(
+        root_frame,
+        padx=FRAME_PADDING,
+        pady=FRAME_PADDING,
+    )
+    entry_frame.pack(expand=1, fill=tk.BOTH)
+    tk.Label(entry_frame, text=property_schema["title"], anchor="w").pack(
+        padx=FRAME_PADDING,
+        pady=FRAME_PADDING,
+        side=tk.LEFT,
+    )
+    if "description" in property_schema:
+        info = tk.Label(
+            entry_frame,
+            text="🛈",
+            anchor="w",
+        )
+        info.pack(
+            side="left",
+        )
+        Hovertip(info, property_schema["description"])
+    seperator_label = tk.Label(entry_frame, anchor="w")
+    seperator_label.pack(expand=1, side="left", fill=tk.BOTH)
+    return entry_frame
+
+def string_entry(frame, parent_dict, key, property_schema):
+    if parent_dict is not None and key in parent_dict:
+        field = tk.StringVar(value=parent_dict[key])
+    else:
+        field = tk.StringVar()
+    if "viewer" in property_schema:
+        if (
+            property_schema["viewer"] == "text-edit-browse-file"
+            or "text-edit-browse-dir"
+        ):
+            ttk.Entry(
+                frame,
+                textvariable=field,
+                state="readonly",
+            ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+            ttk.Button(
+                frame,
+                text="🗁",
+                width=3,
+                command=lambda viewer_type=property_schema[
+                    "viewer"
+                ], path=field: open_explorer(
+                    path, viewer_type
+                ),
+            ).pack(padx=FRAME_PADDING, pady=2, side=tk.RIGHT)
+    else:
+        ttk.Entry(frame, textvariable=field).pack(
+            fill=tk.X, ipadx=110, pady=2, side=tk.LEFT
+        )
+    return field
+
+def int_entry(frame, parent_dict, key, root_frame):
+    if parent_dict is not None and key in parent_dict:
+        field = tk.IntVar(value=parent_dict[key])
+    else:
+        field = tk.IntVar(value=0)
+    ttk.Entry(
+        frame,
+        textvariable=field,
+        validate="key",
+        validatecommand=(root_frame.register(validate_int), "%S"),
+    ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+    return field
+
+def bool_entry(frame, parent_dict, key):
+    if parent_dict is not None and key in parent_dict:
+        field = tk.BooleanVar(value=parent_dict[key])
+    else:
+        field = tk.BooleanVar()
+    ttk.Checkbutton(frame, variable=field).pack(
+        fill=tk.X, ipadx=172, pady=2, side=tk.LEFT, anchor="w"
+    )
+    return field
 
 def dict_ent(schema: dict, root_frame, root):
     """creates a frame and entry for all entries in the tds-server.json file
@@ -46,89 +137,15 @@ def dict_ent(schema: dict, root_frame, root):
     form_state = {}
     for property_key, property_schema in schema["properties"].items():
         if property_schema["type"] == "object":
-            frm = ttk.LabelFrame(
-                root_frame, text=property_schema["title"], width=10, height=5
-            )
-            frm.pack(
-                expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING)
-            )
-            frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
-            form_state[property_key] = dict_ent(
-                property_schema, frm, root[property_key] if root is not None else None
-            )
-
+            form_state[property_key] = obj_entry(root, property_key, property_schema, root_frame)
         else:
-            entry_frame = tk.Frame(
-                root_frame,
-                padx=FRAME_PADDING,
-                pady=FRAME_PADDING,
-            )
-            entry_frame.pack(expand=1, fill=tk.BOTH)
-            tk.Label(entry_frame, text=property_schema["title"], anchor="w").pack(
-                padx=FRAME_PADDING,
-                pady=FRAME_PADDING,
-                side=tk.LEFT,
-            )
-            if "description" in property_schema:
-                info = tk.Label(
-                    entry_frame,
-                    text="🛈",
-                    anchor="w",
-                )
-                info.pack(
-                    side="left",
-                )
-                Hovertip(info, property_schema["description"])
-            seperator_label = tk.Label(entry_frame, anchor="w")
-            seperator_label.pack(expand=1, side="left", fill=tk.BOTH)
+            entry_frame = create_entry_frame(root_frame, property_schema)
             if property_schema["type"] == "string":
-                if root is not None and property_key in root:
-                    form_state[property_key] = tk.StringVar(value=root[property_key])
-                else:
-                    form_state[property_key] = tk.StringVar()
-                if "viewer" in property_schema:
-                    if (
-                        property_schema["viewer"] == "text-edit-browse-file"
-                        or "text-edit-browse-dir"
-                    ):
-                        ttk.Entry(
-                            entry_frame,
-                            textvariable=form_state[property_key],
-                            state="readonly",
-                        ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
-                        ttk.Button(
-                            entry_frame,
-                            text="🗁",
-                            width=3,
-                            command=lambda viewer_type=property_schema[
-                                "viewer"
-                            ], path=form_state[property_key]: open_explorer(
-                                path, viewer_type
-                            ),
-                        ).pack(padx=FRAME_PADDING, pady=2, side=tk.RIGHT)
-                else:
-                    ttk.Entry(entry_frame, textvariable=form_state[property_key]).pack(
-                        fill=tk.X, ipadx=110, pady=2, side=tk.LEFT
-                    )
+                form_state[property_key] = string_entry(entry_frame, root, property_key, property_schema)
             elif property_schema["type"] == "integer":
-                if root is not None and property_key in root:
-                    form_state[property_key] = tk.IntVar(value=root[property_key])
-                else:
-                    form_state[property_key] = tk.IntVar(value=0)
-                ttk.Entry(
-                    entry_frame,
-                    textvariable=form_state[property_key],
-                    validate="key",
-                    validatecommand=(root_frame.register(validate_int), "%S"),
-                ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+                form_state[property_key] = int_entry(entry_frame, root, property_key, root_frame)
             elif property_schema["type"] == "boolean":
-                if root is not None and property_key in root:
-                    form_state[property_key] = tk.BooleanVar(value=root[property_key])
-                else:
-                    form_state[property_key] = tk.BooleanVar()
-                ttk.Checkbutton(entry_frame, variable=form_state[property_key]).pack(
-                    fill=tk.X, ipadx=172, pady=2, side=tk.LEFT, anchor="w"
-                )
+                form_state[property_key] = bool_entry(entry_frame, root, property_key)
     return form_state
 
 
