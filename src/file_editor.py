@@ -29,7 +29,7 @@ def populate_tabs(schema: dict, root, tds):
         body_frame.pack(fill="both", expand=True)
 
         form_tab[property_key] = dict_ent(
-            property_schema, body_frame, tds[property_key] if tds is not None else None
+            property_schema, body_frame, tds[property_key] if tds is not None and property_key in tds else None
         )
         notebook.add(body_frame, text=property_schema["title"])
 
