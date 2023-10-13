@@ -36,7 +36,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest
+        pytest -m "not skip"
         
   deploy:
     needs: build
@@ -60,11 +60,11 @@ jobs:
     - name: Get tags
       run: |
         git describe --tags
-        python embed-version.py
+        python src/embed-version.py
 
     - name: deploy with pyinstaller
       run: |
-        pyinstaller --onefile -n "tds_configuration_tool" --add-data "resources/favicon.png;resources" --add-data "resources/azure.tcl;resources" --add-data "resources/theme;resources/theme" --noconsole file_gui.py
+        pyinstaller --onefile -n "tds_configuration_tool" --add-data "resources/favicon.png;resources" --add-data "resources/azure.tcl;resources" --add-data "resources/theme;resources/theme" --noconsole src/file_gui.py
         
       
     - name: Upload a Build Artifact

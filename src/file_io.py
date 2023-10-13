@@ -109,3 +109,22 @@ def resource_path(relative_path):
     except Exception:
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
+
+
+def tds_version():
+    """this function get the current version from TDS
+
+    Returns:
+        String: returns the current version as string
+    """
+    result = subprocess.run(
+        ["C:/Program Files/Tessonics/TDS2/tds-server.exe", "version"],
+        stdout=subprocess.PIPE,
+        text=True,
+        check=True,
+    )
+    output_lines = result.stdout.strip().split("\n")
+    for line in output_lines:
+        if line.strip().startswith("version"):
+            version = line.strip().split(":")[1].strip()
+    return version

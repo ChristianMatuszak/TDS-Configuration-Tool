@@ -173,13 +173,7 @@ def save(form_state: dict, configuration_file):
 
     result = iter_form(form_state)
 
-    try:
-        save_tds(result, configuration_file)
-        messagebox.showinfo("Saved", "Changes have been successfully saved.")
-    except PermissionError:
-        messagebox.showerror(
-            "Error", " Permission denied. \n Please restart programm as admin!"
-        )
+    save_tds(result, configuration_file)
 
 
 def save_handler(tab_state, configuration_path, window):
@@ -191,10 +185,16 @@ def save_handler(tab_state, configuration_path, window):
         configuration_path (str): The path of the tds-server .json file to save the changes
         window (ttk.Frame): Frame that will be closed after pressing the button
     """
-    save(
-        tab_state,
-        configuration_path,
-    )
+    try:
+        save(
+            tab_state,
+            configuration_path,
+        )
+        messagebox.showinfo("Saved", "Changes have been successfully saved.")
+    except PermissionError:
+        messagebox.showerror(
+            "Error", " Permission denied. \n Please restart programm as admin!"
+        )
 
 
 def confirm_handler(window):

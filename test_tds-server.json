@@ -1,0 +1,9 @@
+{
+	"db": {
+		"common-file": "C:/ProgramData/tessonics/tds2/data/database.sqlite3",
+		"measurement-storage": {
+			"db-file": "C:/ProgramData/tessonics/tds2/data/measurements.sqlite3",
+			"backup-bytes": 1073741824
+		}
+	}
+}
