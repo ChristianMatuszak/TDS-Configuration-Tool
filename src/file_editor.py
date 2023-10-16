@@ -195,7 +195,7 @@ def save(form_state: dict, configuration_file):
         configuration_file = "C:\\ProgramData\\tessonics\\tds2\\tds-server.json"
 
     def iter_form(parent: dict):
-        """function to create the new dict that should be saved
+        """creates a new dict that should to be saved
 
         Args:
             parent (dict): dict where to save the user input (tds-server.json)
