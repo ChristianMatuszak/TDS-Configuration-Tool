@@ -9,10 +9,12 @@ import sys
 
 
 def read_tds(configuration_path):
-    """read the tds-server.json file
+    """ Checks if tds-server.json is available and then loads it
+        If not, the locally stored tds-server.json is loaded
 
     Returns:
-        return: return dict for the json file
+        return: the loaded tds-server.json will be saved as a dict 
+                or if none is available, None
     """
     if configuration_path is not None and exists(configuration_path):
         # if not os.path.isfile(configuration_path):
@@ -38,10 +40,11 @@ def read_tds(configuration_path):
 
 
 def read_schema(default_schema):
-    """read the schema.json file
+    """ loads the schema.json file. 
+        Either by command from the TDS directly or the local one if no TDS is available
 
     Returns:
-        return: return dict for the json file
+        return: return schema.json file as dict
     """
     # 1. Load from command line
     if default_schema is not None:
@@ -58,7 +61,7 @@ def read_schema(default_schema):
 
 
 def save_tds(config, configuration_path):
-    """function to save chaged values in the tds-server file"""
+    """function to save changed values in the tds-server file"""
 
     with open(configuration_path, "w") as f:
         json.dump(config, f, indent=4)
@@ -76,7 +79,7 @@ def last_modified(configuration_path):
 
 
 def show_in_explorer(configuration_path):
-    """funtion to show the tds-server.json file in the explorer"""
+    """ Function to open the stored file path of the tds-server.json file in the explorer"""
 
     folder = os.path.dirname(configuration_path)
     os.startfile(folder)
