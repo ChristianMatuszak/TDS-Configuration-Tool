@@ -10,7 +10,8 @@ FRAME_PADDING = 5
 
 
 def populate_tabs(schema: dict, root, tds):
-    """iterate through the schema.json and for every porperty_key it will create a new Tab
+    """iterate through the schema.json and for every porperty_key it will
+        create a new Tab
 
     Args:
         schema (dict): the schema.json file
@@ -29,24 +30,26 @@ def populate_tabs(schema: dict, root, tds):
         body_frame.pack(fill="both", expand=True)
 
         tab_form_state[property_key] = populate_tab_form(
-            property_schema, body_frame, tds[property_key] if tds is not None and property_key in tds else None
+            property_schema,
+            body_frame,
+            tds[property_key] if tds is not None and property_key in tds else None,
         )
         notebook.add(body_frame, text=property_schema["title"])
 
     return tab_form_state
 
+
 def obj_entry(parent_dict, property_key, property_schema, root_frame):
-    frm = ttk.LabelFrame(
-        root_frame, text=property_schema["title"], width=10, height=5
-    )
-    frm.pack(
-        expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING)
-    )
+    frm = ttk.LabelFrame(root_frame, text=property_schema["title"], width=10, height=5)
+    frm.pack(expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING))
     frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
     return populate_tab_form(
-        property_schema, frm, parent_dict[property_key] if parent_dict is not None else None
+        property_schema,
+        frm,
+        parent_dict[property_key] if parent_dict is not None else None,
     )
-    
+
+
 def create_entry_frame(root_frame, property_schema):
     entry_frame = tk.Frame(
         root_frame,
@@ -73,6 +76,7 @@ def create_entry_frame(root_frame, property_schema):
     seperator_label.pack(expand=1, side="left", fill=tk.BOTH)
     return entry_frame
 
+
 def string_entry(frame, parent_dict, key, property_schema):
     if parent_dict is not None and key in parent_dict:
         field = tk.StringVar(value=parent_dict[key])
@@ -94,15 +98,14 @@ def string_entry(frame, parent_dict, key, property_schema):
                 width=3,
                 command=lambda viewer_type=property_schema[
                     "viewer"
-                ], path=field: open_explorer(
-                    path, viewer_type
-                ),
+                ], path=field: open_explorer(path, viewer_type),
             ).pack(padx=FRAME_PADDING, pady=2, side=tk.RIGHT)
     else:
         ttk.Entry(frame, textvariable=field).pack(
             fill=tk.X, ipadx=110, pady=2, side=tk.LEFT
         )
     return field
+
 
 def int_entry(frame, parent_dict, key, root_frame):
     if parent_dict is not None and key in parent_dict:
@@ -117,6 +120,7 @@ def int_entry(frame, parent_dict, key, root_frame):
     ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
     return field
 
+
 def bool_entry(frame, parent_dict, key):
     if parent_dict is not None and key in parent_dict:
         field = tk.BooleanVar(value=parent_dict[key])
@@ -127,8 +131,11 @@ def bool_entry(frame, parent_dict, key):
     )
     return field
 
+
 def populate_tab_form(schema: dict, root_frame, root):
-    """creates a frame and entry for all entries in the tds-server.json file
+    """Iterates through the schema.json
+       and creates labels and entries for each
+       dict and differentiates between the data types
 
     Args:
         root (dict): the root dict is the tds-server.json file
@@ -137,13 +144,19 @@ def populate_tab_form(schema: dict, root_frame, root):
     form_state = {}
     for property_key, property_schema in schema["properties"].items():
         if property_schema["type"] == "object":
-            form_state[property_key] = obj_entry(root, property_key, property_schema, root_frame)
+            form_state[property_key] = obj_entry(
+                root, property_key, property_schema, root_frame
+            )
         else:
             entry_frame = create_entry_frame(root_frame, property_schema)
             if property_schema["type"] == "string":
-                form_state[property_key] = string_entry(entry_frame, root, property_key, property_schema)
+                form_state[property_key] = string_entry(
+                    entry_frame, root, property_key, property_schema
+                )
             elif property_schema["type"] == "integer":
-                form_state[property_key] = int_entry(entry_frame, root, property_key, root_frame)
+                form_state[property_key] = int_entry(
+                    entry_frame, root, property_key, root_frame
+                )
             elif property_schema["type"] == "boolean":
                 form_state[property_key] = bool_entry(entry_frame, root, property_key)
     return form_state
@@ -166,13 +179,23 @@ def validate_int(new_text):
 
 
 def save(form_state: dict, configuration_file):
-    """save all changes in the tds-server.json file"""
+    """Recursive function.
+        When it hits another dictionary,
+        it calls the same function on the dictionary too.
+
+    Args:
+        form_state (dict): with form entries that should be saved
+        configuration_file (string): save location
+
+    Returns:
+        dict: Dict with form entries
+    """
 
     if configuration_file is None:
         configuration_file = "C:\\ProgramData\\tessonics\\tds2\\tds-server.json"
 
     def iter_form(parent: dict):
-        """function to save changes done by the user
+        """function to create the new dict that should be saved
 
         Args:
             parent (dict): dict where to save the user input (tds-server.json)
@@ -215,6 +238,12 @@ def save_handler(tab_state, configuration_path, window):
 
 
 def confirm_handler(window):
+    """Window with a yes and no button if the application
+        should be closed or remain open after pressing the X button
+
+    Args:
+        window (tk.Frame): Window with a yes and no button
+    """
     answer = askyesno(
         title="Close Configuration-Tool",
         message="close application? \n\n Unsaved changes will be lost!",
