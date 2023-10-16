@@ -10,7 +10,8 @@ FRAME_PADDING = 5
 
 
 def populate_tabs(schema: dict, root, tds):
-    """iterate through the schema.json and for every porperty_key it will create a new Tab
+    """iterate through the schema.json and for every porperty_key it will
+        create a new Tab
 
     Args:
         schema (dict): the schema.json file
@@ -20,7 +21,7 @@ def populate_tabs(schema: dict, root, tds):
     Returns:
         string: returns a dict of all state variables of the tabs form
     """
-    form_tab = {}
+    tab_form_state = {}
     notebook = ttk.Notebook(root)
     notebook.pack(fill="both", expand=True, pady=FRAME_PADDING)
 
@@ -28,22 +29,30 @@ def populate_tabs(schema: dict, root, tds):
         body_frame = ttk.Frame()
         body_frame.pack(fill="both", expand=True)
 
-        form_tab[property_key] = dict_ent(
+        tab_form_state[property_key] = populate_tab_form(
             property_schema, body_frame, tds[property_key] if tds is not None else None
         )
         notebook.add(body_frame, text=property_schema["title"])
 
-    return form_tab
+    return tab_form_state
 
 
-def dict_ent(schema: dict, root_frame, root):
-    """creates a frame and entry for all entries in the tds-server.json file
+def populate_tab_form(schema: dict, root_frame, root):
+    """Iterates through the schema.json
+        and creates labels and entries for each
+        dict and differentiates between the data types
 
     Args:
-        root (dict): the root dict is the tds-server.json file
+        schema (dict): The file that is being iterated
         root_frame (tk.Frame): Frame to show the read data
+        root (dict): the root dict is the tds-server.json file
+
+    Returns:
+        dict: form with entries
     """
     form_state = {}
+    # When it hits another dictionary,
+    # it calls the same function on the dictionary too.
     for property_key, property_schema in schema["properties"].items():
         if property_schema["type"] == "object":
             frm = ttk.LabelFrame(
@@ -53,39 +62,34 @@ def dict_ent(schema: dict, root_frame, root):
                 expand=1, fill=tk.BOTH, pady=(5, FRAME_PADDING), padx=(5, FRAME_PADDING)
             )
             frm.pack(expand=1, fill=tk.BOTH, pady=(0, FRAME_PADDING))
-            form_state[property_key] = dict_ent(
+            form_state[property_key] = populate_tab_form(
                 property_schema, frm, root[property_key] if root is not None else None
             )
 
         else:
-            entry_frame = tk.Frame(
-                root_frame,
-                padx=FRAME_PADDING,
-                pady=FRAME_PADDING,
-            )
+            entry_frame = tk.Frame(root_frame, padx=FRAME_PADDING, pady=FRAME_PADDING)
             entry_frame.pack(expand=1, fill=tk.BOTH)
-            tk.Label(entry_frame, text=property_schema["title"], anchor="w").pack(
-                padx=FRAME_PADDING,
-                pady=FRAME_PADDING,
-                side=tk.LEFT,
-            )
+            label = tk.Label(entry_frame, text=property_schema["title"], anchor="w")
+            label.pack(padx=FRAME_PADDING, pady=FRAME_PADDING, side=tk.LEFT)
+
+            # Help icon if a description is available
+
             if "description" in property_schema:
-                info = tk.Label(
-                    entry_frame,
-                    text="🛈",
-                    anchor="w",
-                )
-                info.pack(
-                    side="left",
-                )
+                info = tk.Label(entry_frame, text="🛈", anchor="w")
+                info.pack(side="left")
                 Hovertip(info, property_schema["description"])
+
             seperator_label = tk.Label(entry_frame, anchor="w")
             seperator_label.pack(expand=1, side="left", fill=tk.BOTH)
+
+            # Data type verification (string, integer, boolean)
+            # and strings additionally according to file pathsand normal strings
             if property_schema["type"] == "string":
                 if root is not None and property_key in root:
                     form_state[property_key] = tk.StringVar(value=root[property_key])
                 else:
                     form_state[property_key] = tk.StringVar()
+
                 if "viewer" in property_schema:
                     if (
                         property_schema["viewer"] == "text-edit-browse-file"
@@ -95,7 +99,8 @@ def dict_ent(schema: dict, root_frame, root):
                             entry_frame,
                             textvariable=form_state[property_key],
                             state="readonly",
-                        ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+                        )
+                        ttk.Entry.pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
                         ttk.Button(
                             entry_frame,
                             text="🗁",
@@ -105,11 +110,12 @@ def dict_ent(schema: dict, root_frame, root):
                             ], path=form_state[property_key]: open_explorer(
                                 path, viewer_type
                             ),
-                        ).pack(padx=FRAME_PADDING, pady=2, side=tk.RIGHT)
+                        )
+                        ttk.Button.pack(padx=FRAME_PADDING, pady=2, side=tk.RIGHT)
                 else:
-                    ttk.Entry(entry_frame, textvariable=form_state[property_key]).pack(
-                        fill=tk.X, ipadx=110, pady=2, side=tk.LEFT
-                    )
+                    ttk.Entry(entry_frame, textvariable=form_state[property_key])
+                    ttk.Entry.pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+
             elif property_schema["type"] == "integer":
                 if root is not None and property_key in root:
                     form_state[property_key] = tk.IntVar(value=root[property_key])
@@ -120,13 +126,16 @@ def dict_ent(schema: dict, root_frame, root):
                     textvariable=form_state[property_key],
                     validate="key",
                     validatecommand=(root_frame.register(validate_int), "%S"),
-                ).pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+                )
+                ttk.Entry.pack(fill=tk.X, ipadx=110, pady=2, side=tk.LEFT)
+
             elif property_schema["type"] == "boolean":
                 if root is not None and property_key in root:
                     form_state[property_key] = tk.BooleanVar(value=root[property_key])
                 else:
                     form_state[property_key] = tk.BooleanVar()
-                ttk.Checkbutton(entry_frame, variable=form_state[property_key]).pack(
+                ttk.Checkbutton(entry_frame, variable=form_state[property_key])
+                ttk.Checkbutton.pack(
                     fill=tk.X, ipadx=172, pady=2, side=tk.LEFT, anchor="w"
                 )
     return form_state
@@ -149,13 +158,23 @@ def validate_int(new_text):
 
 
 def save(form_state: dict, configuration_file):
-    """save all changes in the tds-server.json file"""
+    """Recursive function.
+        When it hits another dictionary,
+        it calls the same function on the dictionary too.
+
+    Args:
+        form_state (dict): with form entries that should be saved
+        configuration_file (string): save location
+
+    Returns:
+        dict: Dict with form entries
+    """
 
     if configuration_file is None:
         configuration_file = "C:\\ProgramData\\tessonics\\tds2\\tds-server.json"
 
     def iter_form(parent: dict):
-        """function to save changes done by the user
+        """function to create the new dict that should be saved
 
         Args:
             parent (dict): dict where to save the user input (tds-server.json)
@@ -198,6 +217,12 @@ def save_handler(tab_state, configuration_path, window):
 
 
 def confirm_handler(window):
+    """Window with a yes and no button if the application
+        should be closed or remain open after pressing the X button
+
+    Args:
+        window (tk.Frame): Window with a yes and no button
+    """
     answer = askyesno(
         title="Close Configuration-Tool",
         message="close application? \n\n Unsaved changes will be lost!",
