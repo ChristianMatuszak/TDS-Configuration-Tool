@@ -64,6 +64,7 @@ jobs:
       run: |
         git describe --tags
         python src/embed-version.py
+        cat src/version.py
 
     - name: deploy with pyinstaller
       run: |
